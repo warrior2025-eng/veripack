@@ -1,0 +1,5 @@
+# Adds a production WSGI server on top of requirements.txt. Flask's
+# built-in dev server (used by `python main.py`) prints its own warning
+# against production use -- this is what backs the CMD in Dockerfile.
+-r requirements.txt
+gunicorn==23.0.0

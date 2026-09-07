@@ -1,0 +1,21 @@
+# VeriPack backend dependencies.
+#
+# These versions match what was actually used and tested in development.
+# opencv-python, pytesseract, and reportlab have no external service
+# dependency once installed; pytesseract additionally requires the
+# `tesseract-ocr` SYSTEM package (see README.md's Prerequisites section --
+# it is not a pip package and must be installed via apt/brew/etc.).
+#
+# NOT included here because they require network access this sandbox did
+# not have: fastapi, sqlalchemy, psycopg2-binary, easyocr, celery, redis,
+# bcrypt. See README.md "Production stack upgrade path" for how to move to
+# the PRD's original target stack once you're in an environment that can
+# reach PyPI.
+
+flask==3.1.3
+opencv-python==4.13.0.92
+numpy==2.4.4
+pillow==12.1.1
+pytesseract==0.3.13
+reportlab==4.4.10
+pyjwt==2.7.0

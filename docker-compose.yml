@@ -1,0 +1,34 @@
+# Local development / single-VM deployment.
+#
+# NOT tested against a running Docker daemon in this project's development
+# sandbox (see README.md's "Development environment note") -- written
+# correctly against standard Compose v2 syntax, but please verify with
+# `docker compose up --build` before depending on it.
+#
+# This is intentionally ONE service. The PRD's target architecture adds
+# PostgreSQL, Redis, and a Celery worker (see docs/ARCHITECTURE.md) --
+# they're omitted here because the reference implementation runs on
+# SQLite and a synchronous in-process pipeline (also explained in that
+# doc, and in the code's own module docstrings). Adding those services to
+# this file is the concrete first step of that upgrade path.
+
+services:
+  veripack:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - VERIPACK_JWT_SECRET=${VERIPACK_JWT_SECRET:-change-this-to-a-long-random-value}
+      - VERIPACK_ALLOWED_ORIGIN=${VERIPACK_ALLOWED_ORIGIN:-*}
+      - VERIPACK_DB_PATH=/app/storage/veripack.db
+      - VERIPACK_EVIDENCE_DIR=/app/storage/evidence
+      - VERIPACK_REPORT_DIR=/app/storage/reports
+    volumes:
+      # Persist the database and generated files across container restarts.
+      - veripack_storage:/app/storage
+    restart: unless-stopped
+
+volumes:
+  veripack_storage:

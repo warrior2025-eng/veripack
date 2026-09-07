@@ -1,0 +1,202 @@
+/* VeriPack design language (PRD Part 29):
+   deep navy / slate / neutral surfaces, subtle accent, clear status colors,
+   strong typography, large touch targets, no gradients, no "AI everywhere". */
+
+:root {
+    --navy: #0b3d66;
+    --navy-dark: #082a49;
+    --slate: #3c4a5a;
+    --surface: #f5f7fa;
+    --surface-card: #ffffff;
+    --border: #dde3ea;
+    --text: #1a2430;
+    --text-muted: #5b6b7c;
+
+    --compliant: #1f7a3d;
+    --compliant-bg: #e8f5eb;
+    --non-compliance: #b3261e;
+    --non-compliance-bg: #fbeae9;
+    --requires-review: #b06a00;
+    --requires-review-bg: #fdf1de;
+    --insufficient: #5b6b7c;
+    --insufficient-bg: #eceff2;
+
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(11, 61, 102, 0.08), 0 1px 2px rgba(11, 61, 102, 0.06);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+a { color: var(--navy); }
+
+button {
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    padding: 10px 18px;
+    min-height: 40px;
+}
+button.primary { background: var(--navy); color: white; }
+button.primary:hover { background: var(--navy-dark); }
+button.secondary { background: white; border-color: var(--border); color: var(--navy); }
+button.secondary:hover { background: var(--surface); }
+button.danger { background: var(--non-compliance); color: white; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+input, select, textarea {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%;
+}
+
+/* ---------- Layout ---------- */
+
+.app-shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+    width: 230px;
+    background: var(--navy);
+    color: white;
+    padding: 20px 0;
+    flex-shrink: 0;
+}
+.sidebar .brand { padding: 0 20px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 12px; }
+.sidebar .brand h1 { font-size: 20px; margin: 0; letter-spacing: 0.5px; }
+.sidebar .brand p { font-size: 11.5px; opacity: 0.75; margin: 4px 0 0 0; }
+.sidebar nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 20px; color: rgba(255,255,255,0.85);
+    text-decoration: none; font-size: 14px; border-left: 3px solid transparent;
+}
+.sidebar nav a:hover { background: rgba(255,255,255,0.06); }
+.sidebar nav a.active { background: rgba(255,255,255,0.1); border-left-color: #ffffff; color: white; font-weight: 600; }
+.sidebar .user-box { margin-top: auto; padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.15); font-size: 12.5px; }
+.sidebar .user-box .role-badge {
+    display: inline-block; background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-top: 4px;
+}
+
+.main { flex: 1; padding: 28px 34px; max-width: 1200px; }
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; flex-wrap: wrap; gap: 12px; }
+.page-header h2 { margin: 0 0 4px 0; font-size: 22px; color: var(--navy-dark); }
+.page-header .subtitle { color: var(--text-muted); font-size: 13.5px; }
+
+.card {
+    background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px;
+}
+.card h3 { margin-top: 0; font-size: 15px; color: var(--navy-dark); }
+
+/* ---------- Login ---------- */
+
+.login-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy) 100%);
+}
+.login-card {
+    background: white; border-radius: 12px; padding: 40px; width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+.login-card .brand-title { color: var(--navy); font-size: 26px; margin: 0; font-weight: 700; }
+.login-card .brand-tagline { color: var(--text-muted); font-size: 13px; margin: 6px 0 24px 0; font-style: italic; }
+.login-card label { display: block; font-size: 12.5px; font-weight: 600; color: var(--slate); margin: 14px 0 5px 0; }
+.login-card .hint-box { background: var(--surface); border-radius: var(--radius); padding: 12px 14px; margin-top: 20px; font-size: 12px; color: var(--text-muted); }
+.error-banner { background: var(--non-compliance-bg); color: var(--non-compliance); border-radius: var(--radius); padding: 10px 14px; font-size: 13px; margin-top: 14px; }
+
+/* ---------- Dashboard stat grid ---------- */
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.stat-box { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.stat-box .value { font-size: 26px; font-weight: 700; color: var(--navy-dark); }
+.stat-box .label { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; }
+.stat-box.compliant .value { color: var(--compliant); }
+.stat-box.non-compliance .value { color: var(--non-compliance); }
+.stat-box.review .value { color: var(--requires-review); }
+.stat-box.insufficient .value { color: var(--insufficient); }
+
+/* ---------- Verdict badges ---------- */
+
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 20px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.badge.COMPLIANT { background: var(--compliant-bg); color: var(--compliant); }
+.badge.POTENTIAL_NON_COMPLIANCE { background: var(--non-compliance-bg); color: var(--non-compliance); }
+.badge.REQUIRES_OFFICER_VERIFICATION { background: var(--requires-review-bg); color: var(--requires-review); }
+.badge.INSUFFICIENT_EVIDENCE { background: var(--insufficient-bg); color: var(--insufficient); }
+
+.status-pill { padding: 3px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 600; background: var(--surface); color: var(--slate); border: 1px solid var(--border); }
+
+/* ---------- Tables ---------- */
+
+table.data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+table.data-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; }
+table.data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+table.data-table tr:hover { background: var(--surface); cursor: pointer; }
+
+/* ---------- Scan / upload ---------- */
+
+.dropzone {
+    border: 2px dashed var(--border); border-radius: var(--radius); padding: 46px 20px; text-align: center;
+    background: white; cursor: pointer; transition: border-color 0.15s;
+}
+.dropzone:hover, .dropzone.dragover { border-color: var(--navy); background: #f0f5fa; }
+.dropzone .icon { font-size: 40px; margin-bottom: 10px; }
+.dropzone p { margin: 4px 0; color: var(--text-muted); font-size: 13.5px; }
+.preview-image { max-width: 320px; max-height: 320px; border-radius: var(--radius); border: 1px solid var(--border); }
+
+.pipeline-stages { display: flex; flex-direction: column; gap: 8px; margin: 18px 0; }
+.pipeline-stage { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: var(--radius); background: var(--surface); font-size: 13.5px; color: var(--text-muted); }
+.pipeline-stage.active { background: #e8f0f8; color: var(--navy-dark); font-weight: 600; }
+.pipeline-stage.done { background: var(--compliant-bg); color: var(--compliant); }
+.pipeline-stage .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+.pipeline-stage.active .dot { background: var(--navy); }
+.pipeline-stage.done .dot { background: var(--compliant); }
+
+/* ---------- Result requirement rows ---------- */
+
+.requirement-row { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; background: white; }
+.requirement-row .req-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.requirement-row .req-name { font-weight: 600; font-size: 14.5px; }
+.requirement-row .req-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.requirement-row .req-reason { font-size: 13.5px; color: var(--text); margin-top: 8px; line-height: 1.5; }
+.requirement-row .confidence-bar-track { height: 5px; background: var(--surface); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+.requirement-row .confidence-bar-fill { height: 100%; background: var(--navy); }
+
+.evidence-image-wrap { text-align: center; margin: 16px 0; }
+.evidence-image-wrap img { max-width: 100%; border-radius: var(--radius); border: 1px solid var(--border); }
+
+.limitation-note { background: #fff8ec; border: 1px solid #f0d9a8; border-radius: var(--radius); padding: 12px 16px; font-size: 12.5px; color: #7a5b13; margin: 16px 0; }
+
+.empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
+.empty-state .icon { font-size: 36px; margin-bottom: 10px; }
+
+.toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+
+.tag { display: inline-block; background: var(--surface); border: 1px solid var(--border); padding: 2px 9px; border-radius: 10px; font-size: 11.5px; color: var(--text-muted); margin-right: 4px; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(10,20,30,0.5); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+.modal-box { background: white; border-radius: 10px; padding: 24px; width: 520px; max-width: 100%; max-height: 88vh; overflow-y: auto; }
+
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(11,61,102,0.2); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 800px) {
+    .app-shell { flex-direction: column; }
+    .sidebar { width: 100%; padding: 12px 0; }
+    .sidebar nav { display: flex; overflow-x: auto; }
+    .sidebar nav a { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+    .sidebar nav a.active { border-bottom-color: white; }
+    .sidebar .user-box { display: none; }
+    .main { padding: 18px; }
+}
