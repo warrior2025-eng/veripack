@@ -61,7 +61,14 @@ const Api = (() => {
 
         createCheck: (formData) => request("/api/checks", { method: "POST", body: formData, isFormData: true }),
         processCheck: (id) => request(`/api/checks/${id}/process`, { method: "POST" }),
-        listChecks: () => request("/api/checks"),
+        listChecks: (filters = {}) => {
+            const qs = new URLSearchParams();
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value) qs.set(key, value);
+            });
+            const query = qs.toString();
+            return request(`/api/checks${query ? `?${query}` : ""}`);
+        },
         getCheck: (id) => request(`/api/checks/${id}`),
         getResults: (id) => request(`/api/checks/${id}/results`),
         getEvidence: (id) => request(`/api/checks/${id}/evidence`),

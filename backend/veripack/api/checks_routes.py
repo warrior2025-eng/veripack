@@ -122,19 +122,56 @@ def _check_row_summary(check: dict) -> dict:
 @bp.get("")
 @require_auth
 def list_checks():
+    """Supports optional query params for the Inspection History screen:
+      ?category=PACKAGED_FOOD_FMCG
+      ?status=COMPLETED
+      ?date_from=2026-01-01&date_to=2026-12-31
+      ?q=biscuit  (searches product name)
+    All params are optional and combine with AND when several are given.
+    """
     scope = organization_scoped_filter(g.user)
     query = """SELECT cc.*, p.name as product_name FROM compliance_check cc
                LEFT JOIN product p ON p.id = cc.product_id"""
+    conditions = []
     params = []
+
     if scope is not None:
-        query += " WHERE cc.organization_id = ?"
+        conditions.append("cc.organization_id = ?")
         params.append(scope)
+
+    category = request.args.get("category")
+    if category:
+        conditions.append("cc.category = ?")
+        params.append(category)
+
+    status = request.args.get("status")
+    if status:
+        conditions.append("cc.status = ?")
+        params.append(status)
+
+    date_from = request.args.get("date_from")
+    if date_from:
+        conditions.append("date(cc.created_at) >= date(?)")
+        params.append(date_from)
+
+    date_to = request.args.get("date_to")
+    if date_to:
+        conditions.append("date(cc.created_at) <= date(?)")
+        params.append(date_to)
+
+    search_text = request.args.get("q")
+    if search_text:
+        conditions.append("LOWER(p.name) LIKE ?")
+        params.append(f"%{search_text.lower()}%")
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
     query += " ORDER BY cc.created_at DESC LIMIT 200"
+
     with get_db() as cur:
         cur.execute(query, params)
         checks = rows_to_list(cur.fetchall())
     return jsonify({"checks": checks})
-
 
 @bp.get("/<int:check_id>")
 @require_auth

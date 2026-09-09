@@ -313,14 +313,23 @@ function renderScan() {
 }
 
 // ---------------------------------------------------------------------------
-// View: Inspection History (list)
+// View: Inspection History (list, with search/filter)
 // ---------------------------------------------------------------------------
+
+const CHECK_CATEGORIES = ["PACKAGED_FOOD_FMCG", "COSMETICS"];
+const CHECK_STATUSES = ["COMPLETED", "PROCESSING", "QUEUED", "INVALID_IMAGE", "UNSUPPORTED_CATEGORY", "PROCESSING_FAILED"];
+
+let _checksListFilters = { q: "", category: "", status: "", date_from: "", date_to: "" };
 
 async function renderChecksList() {
     renderShell("#/checks", `<div class="empty-state"><span class="spinner"></span> Loading...</div>`);
+    await loadAndRenderChecksList();
+}
+
+async function loadAndRenderChecksList() {
     let data;
     try {
-        data = await Api.listChecks();
+        data = await Api.listChecks(_checksListFilters);
     } catch (err) {
         mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
         return;
@@ -338,9 +347,30 @@ async function renderChecksList() {
             </tr>`).join("")
         : "";
 
+    const categoryOptions = CHECK_CATEGORIES.map((cat) =>
+        `<option value="${cat}" ${_checksListFilters.category === cat ? "selected" : ""}>${cat}</option>`).join("");
+    const statusOptions = CHECK_STATUSES.map((st) =>
+        `<option value="${st}" ${_checksListFilters.status === st ? "selected" : ""}>${st}</option>`).join("");
+
+    const hasActiveFilters = Object.values(_checksListFilters).some((v) => v);
+
     mainContent().innerHTML = `
         <div class="page-header"><div><h2>Inspection History</h2><p class="subtitle">Every compliance check, most recent first.</p></div></div>
         <div class="card">
+            <div class="toolbar" style="flex-wrap:wrap;">
+                <input type="text" id="filter-q" placeholder="Search product name..." style="max-width:220px;" value="${escapeHtml(_checksListFilters.q)}" />
+                <select id="filter-category" style="max-width:200px;">
+                    <option value="">All categories</option>${categoryOptions}
+                </select>
+                <select id="filter-status" style="max-width:180px;">
+                    <option value="">All statuses</option>${statusOptions}
+                </select>
+                <label style="font-size:12.5px;color:#5b6b7c;">From</label>
+                <input type="date" id="filter-date-from" style="max-width:160px;" value="${_checksListFilters.date_from}" />
+                <label style="font-size:12.5px;color:#5b6b7c;">To</label>
+                <input type="date" id="filter-date-to" style="max-width:160px;" value="${_checksListFilters.date_to}" />
+                <button class="secondary" id="filter-clear-btn" ${hasActiveFilters ? "" : "disabled"}>Clear Filters</button>
+            </div>
             ${data.checks.length ? `
             <table class="data-table">
                 <thead><tr><th>ID</th><th>Product</th><th>Category</th><th>Status</th><th>Image Quality</th><th>Submitted</th></tr></thead>
@@ -348,10 +378,39 @@ async function renderChecksList() {
             </table>` : `
             <div class="empty-state">
                 <div class="icon">\u{1F4CB}</div>
-                <p>No compliance checks yet.</p>
-                <button class="primary" onclick="window.location.hash='#/scan'">Scan a Product</button>
+                <p>${hasActiveFilters ? "No checks match these filters." : "No compliance checks yet."}</p>
+                ${hasActiveFilters ? "" : '<button class="primary" onclick="window.location.hash=\'#/scan\'">Scan a Product</button>'}
             </div>`}
         </div>`;
+
+    let searchDebounceTimer = null;
+    document.getElementById("filter-q").addEventListener("input", (e) => {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            _checksListFilters.q = e.target.value.trim();
+            loadAndRenderChecksList();
+        }, 350);
+    });
+    document.getElementById("filter-category").addEventListener("change", (e) => {
+        _checksListFilters.category = e.target.value;
+        loadAndRenderChecksList();
+    });
+    document.getElementById("filter-status").addEventListener("change", (e) => {
+        _checksListFilters.status = e.target.value;
+        loadAndRenderChecksList();
+    });
+    document.getElementById("filter-date-from").addEventListener("change", (e) => {
+        _checksListFilters.date_from = e.target.value;
+        loadAndRenderChecksList();
+    });
+    document.getElementById("filter-date-to").addEventListener("change", (e) => {
+        _checksListFilters.date_to = e.target.value;
+        loadAndRenderChecksList();
+    });
+    document.getElementById("filter-clear-btn").addEventListener("click", () => {
+        _checksListFilters = { q: "", category: "", status: "", date_from: "", date_to: "" };
+        loadAndRenderChecksList();
+    });
 }
 
 // ---------------------------------------------------------------------------
