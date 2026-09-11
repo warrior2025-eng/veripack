@@ -211,12 +211,16 @@ function renderScan() {
             <div><h2>Scan Product</h2><p class="subtitle">Upload a label photo for real-time compliance screening.</p></div>
         </div>
         <div class="card">
+            <div class="toolbar" style="margin-bottom:14px;">
+                <button class="secondary" id="take-photo-btn">\u{1F4F8} Take Photo (Camera)</button>
+            </div>
             <div class="dropzone" id="dropzone">
                 <div class="icon">\u{1F4F7}</div>
                 <p><strong>Click to upload</strong> or drag a label photo here</p>
                 <p>JPEG or PNG, up to 10MB</p>
                 <input type="file" id="file-input" accept="image/jpeg,image/png" style="display:none;" />
             </div>
+            <div id="camera-panel" style="display:none;margin-top:16px;"></div>
             <div id="preview-area" style="margin-top:16px;"></div>
             <div style="margin-top:16px;">
                 <label style="font-size:12.5px;font-weight:600;color:#3c4a5a;">Product name (optional)</label>
@@ -281,6 +285,78 @@ function renderScan() {
         document.getElementById("scan-actions").innerHTML =
             `<button class="primary" id="submit-scan-btn">Run Compliance Scan</button>`;
         document.getElementById("submit-scan-btn").addEventListener("click", submitScan);
+    }
+
+    // ---- Direct camera capture ----
+    const takePhotoBtn = document.getElementById("take-photo-btn");
+    const cameraPanel = document.getElementById("camera-panel");
+
+    takePhotoBtn.addEventListener("click", openCamera);
+
+    async function openCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            cameraPanel.style.display = "block";
+            cameraPanel.innerHTML = `<div class="error-banner">Camera access is not supported in this browser. Please use "Click to upload" instead.</div>`;
+            return;
+        }
+
+        stopActiveCameraStream();
+
+        cameraPanel.style.display = "block";
+        cameraPanel.innerHTML = `
+            <div style="text-align:center;">
+                <video id="camera-video" autoplay playsinline muted
+                    style="width:100%;max-width:420px;border-radius:8px;border:1px solid var(--border);background:#000;"></video>
+                <div class="toolbar" style="justify-content:center;margin-top:12px;">
+                    <button class="primary" id="capture-photo-btn" disabled>Capture Photo</button>
+                    <button class="secondary" id="cancel-camera-btn">Cancel</button>
+                </div>
+                <p class="subtitle" id="camera-status">Requesting camera access...</p>
+            </div>`;
+        document.getElementById("dropzone").style.display = "none";
+        document.getElementById("cancel-camera-btn").addEventListener("click", closeCamera);
+
+        try {
+            _activeCameraStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment" },
+                audio: false,
+            });
+            const video = document.getElementById("camera-video");
+            if (!video) { stopActiveCameraStream(); return; }
+            video.srcObject = _activeCameraStream;
+            document.getElementById("camera-status").textContent = "Position the label in frame, then capture.";
+            const captureBtn = document.getElementById("capture-photo-btn");
+            captureBtn.disabled = false;
+            captureBtn.addEventListener("click", capturePhoto);
+        } catch (err) {
+            const statusEl = document.getElementById("camera-status");
+            if (statusEl) {
+                statusEl.style.color = "#b3261e";
+                statusEl.textContent = `Could not access camera (${err.message}). You can still use "Click to upload" instead.`;
+            }
+        }
+    }
+
+    function capturePhoto() {
+        const video = document.getElementById("camera-video");
+        if (!video || !video.videoWidth) return;
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+            if (!blob) return;
+            const file = new File([blob], `camera_capture_${Date.now()}.jpg`, { type: "image/jpeg" });
+            closeCamera();
+            handleFile(file);
+        }, "image/jpeg", 0.92);
+    }
+
+    function closeCamera() {
+        stopActiveCameraStream();
+        cameraPanel.style.display = "none";
+        cameraPanel.innerHTML = "";
+        document.getElementById("dropzone").style.display = "";
     }
 
     async function submitScan() {
@@ -404,6 +480,14 @@ const CHECK_CATEGORIES = ["PACKAGED_FOOD_FMCG", "COSMETICS", "ELECTRONICS"];
 const CHECK_STATUSES = ["COMPLETED", "PROCESSING", "QUEUED", "INVALID_IMAGE", "UNSUPPORTED_CATEGORY", "PROCESSING_FAILED"];
 
 let _checksListFilters = { q: "", category: "", status: "", date_from: "", date_to: "" };
+
+let _activeCameraStream = null;
+function stopActiveCameraStream() {
+    if (_activeCameraStream) {
+        _activeCameraStream.getTracks().forEach((track) => track.stop());
+        _activeCameraStream = null;
+    }
+}
 
 async function renderChecksList() {
     renderShell("#/checks", `<div class="empty-state"><span class="spinner"></span> Loading...</div>`);
@@ -964,6 +1048,7 @@ async function renderAuditLog() {
 // ---------------------------------------------------------------------------
 
 async function router() {
+    stopActiveCameraStream();
     const hash = window.location.hash || "#/dashboard";
     const isAuthed = !!Api.token() && !!Api.currentUser();
 
