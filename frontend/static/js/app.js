@@ -226,6 +226,30 @@ function renderScan() {
             <div id="pipeline-progress"></div>
         </div>
         <div class="card">
+            <h3>Bulk Upload</h3>
+            <p class="subtitle" style="margin-top:0;">Scan up to 20 products in one batch -- useful for e-commerce/marketplace-style reviews.</p>
+            <input type="file" id="bulk-file-input" accept="image/jpeg,image/png" multiple />
+            <div id="bulk-selected-list" style="margin-top:10px;font-size:13px;color:#5b6b7c;"></div>
+            <div id="bulk-actions" style="margin-top:14px;"></div>
+            <div id="bulk-results" style="margin-top:16px;"></div>
+        </div>
+                <div class="card">
+            <h3>Bulk Upload</h3>
+            <p class="subtitle" style="margin-top:0;">Scan up to 20 products in one batch -- useful for e-commerce/marketplace-style reviews.</p>
+            <input type="file" id="bulk-file-input" accept="image/jpeg,image/png" multiple />
+            <div id="bulk-selected-list" style="margin-top:10px;font-size:13px;color:#5b6b7c;"></div>
+            <div id="bulk-actions" style="margin-top:14px;"></div>
+            <div id="bulk-results" style="margin-top:16px;"></div>
+        </div>
+                <div class="card">
+            <h3>Bulk Upload</h3>
+            <p class="subtitle" style="margin-top:0;">Scan up to 20 products in one batch -- useful for e-commerce/marketplace-style reviews.</p>
+            <input type="file" id="bulk-file-input" accept="image/jpeg,image/png" multiple />
+            <div id="bulk-selected-list" style="margin-top:10px;font-size:13px;color:#5b6b7c;"></div>
+            <div id="bulk-actions" style="margin-top:14px;"></div>
+            <div id="bulk-results" style="margin-top:16px;"></div>
+        </div>
+        <div class="card">
             <h3>Or try a seeded demo scenario</h3>
             <p class="subtitle" style="margin-top:0;">Uses the same pipeline and database -- not a separate fake UI (PRD Part 31).</p>
             <div class="toolbar">
@@ -310,13 +334,73 @@ function renderScan() {
         document.getElementById("pipeline-progress").innerHTML =
             `<div class="pipeline-stages">${html}</div>`;
     }
+
+    let selectedBulkFiles = [];
+    const bulkFileInput = document.getElementById("bulk-file-input");
+
+    bulkFileInput.addEventListener("change", () => {
+        selectedBulkFiles = Array.from(bulkFileInput.files);
+        if (selectedBulkFiles.length > 20) {
+            document.getElementById("bulk-selected-list").innerHTML =
+                `<span style="color:#b3261e;">Please select 20 images or fewer.</span>`;
+            document.getElementById("bulk-actions").innerHTML = "";
+            return;
+        }
+        document.getElementById("bulk-selected-list").innerHTML =
+            selectedBulkFiles.length
+                ? `${selectedBulkFiles.length} file(s) selected: ${selectedBulkFiles.map((f) => escapeHtml(f.name)).join(", ")}`
+                : "";
+        document.getElementById("bulk-actions").innerHTML = selectedBulkFiles.length
+            ? `<button class="primary" id="submit-bulk-btn">Run Bulk Scan (${selectedBulkFiles.length} images)</button>`
+            : "";
+        const submitBulkBtn = document.getElementById("submit-bulk-btn");
+        if (submitBulkBtn) submitBulkBtn.addEventListener("click", submitBulkScan);
+    });
+
+    async function submitBulkScan() {
+        const actionsBox = document.getElementById("bulk-actions");
+        const resultsBox = document.getElementById("bulk-results");
+        actionsBox.innerHTML = `<button class="primary" disabled><span class="spinner"></span> Processing ${selectedBulkFiles.length} images...</button>`;
+        resultsBox.innerHTML = `<p class="subtitle">This can take a little while -- each image runs the full pipeline one at a time.</p>`;
+
+        const formData = new FormData();
+        selectedBulkFiles.forEach((file) => formData.append("images", file));
+
+        try {
+            const res = await Api.createBulkChecks(formData);
+            const rows = res.results.map((r) => {
+                const statusClass = r.status === "COMPLETED" ? "COMPLIANT"
+                    : (r.status === "REJECTED" || r.status === "PROCESSING_FAILED") ? "POTENTIAL_NON_COMPLIANCE"
+                    : "REQUIRES_OFFICER_VERIFICATION";
+                const link = r.check_id ? `<a href="#/checks/${r.check_id}">View result &rarr;</a>` : "-";
+                return `<tr>
+                    <td>${escapeHtml(r.filename)}</td>
+                    <td><span class="badge ${statusClass}">${escapeHtml(r.status)}</span></td>
+                    <td>${link}</td>
+                </tr>`;
+            }).join("");
+            resultsBox.innerHTML = `
+                <table class="data-table">
+                    <thead><tr><th>File</th><th>Status</th><th>Result</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                <div class="toolbar" style="margin-top:14px;">
+                    <button class="secondary" onclick="window.location.hash='#/checks'">View All in Inspection History</button>
+                </div>`;
+            actionsBox.innerHTML = "";
+        } catch (err) {
+            resultsBox.innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+            actionsBox.innerHTML = `<button class="primary" id="submit-bulk-btn">Retry Bulk Scan</button>`;
+            document.getElementById("submit-bulk-btn").addEventListener("click", submitBulkScan);
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------
 // View: Inspection History (list, with search/filter)
 // ---------------------------------------------------------------------------
 
-const CHECK_CATEGORIES = ["PACKAGED_FOOD_FMCG", "COSMETICS"];
+const CHECK_CATEGORIES = ["PACKAGED_FOOD_FMCG", "COSMETICS", "ELECTRONICS"];
 const CHECK_STATUSES = ["COMPLETED", "PROCESSING", "QUEUED", "INVALID_IMAGE", "UNSUPPORTED_CATEGORY", "PROCESSING_FAILED"];
 
 let _checksListFilters = { q: "", category: "", status: "", date_from: "", date_to: "" };
@@ -676,7 +760,7 @@ function openNewRuleVersionModal() {
             <label>Name</label><input id="rv-name" placeholder="e.g. PC Rules 2011 (as amended 2026) - Food/FMCG" />
             <label>Version label</label><input id="rv-version" placeholder="e.g. 1.2" />
             <label>Category</label>
-            <select id="rv-category"><option value="PACKAGED_FOOD_FMCG">Packaged Food / FMCG</option><option value="COSMETICS">Cosmetics</option></select>
+            <select id="rv-category"><option value="PACKAGED_FOOD_FMCG">Packaged Food / FMCG</option><option value="COSMETICS">Cosmetics</option><option value="ELECTRONICS">Electronics</option></select>
             <label>Source document</label><input id="rv-source-doc" placeholder="Legal Metrology (Packaged Commodities) Rules, 2011 as amended" />
             <label>Source reference (optional)</label><input id="rv-source-ref" placeholder="e.g. G.S.R. XXX(E), dated ..." />
             <div id="modal-error"></div>

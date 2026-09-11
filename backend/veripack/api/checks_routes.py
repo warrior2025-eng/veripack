@@ -24,39 +24,27 @@ def _allowed_file(filename: str, mimetype: str) -> bool:
     return ext_ok and mimetype in ALLOWED_MIME_TYPES
 
 
-@bp.post("")
-@require_auth
-def create_check():
-    """Accepts multipart/form-data: `image` file, optional `product_name`,
-    optional `audit_date` (ISO date, defaults to today -- used to select the
-    applicable rule_version, PRD Part 47 reproducibility)."""
-    if "image" not in request.files:
-        return jsonify({"error": "VALIDATION_ERROR", "message": "No image file provided."}), 400
 
-    file = request.files["image"]
+def _create_single_check(file, product_name, audit_date, source):
+    """Shared by create_check (single scan) and create_bulk_checks (bulk
+    upload) so both go through identical validation/storage logic."""
     if file.filename == "":
-        return jsonify({"error": "VALIDATION_ERROR", "message": "Empty filename."}), 400
+        return None, ({"error": "VALIDATION_ERROR", "message": "Empty filename."}, 400)
 
     file.seek(0, os.SEEK_END)
     size = file.tell()
     file.seek(0)
     if size > MAX_FILE_SIZE_BYTES:
-        return jsonify({"error": "VALIDATION_ERROR", "message": "File exceeds 10MB limit."}), 400
+        return None, ({"error": "VALIDATION_ERROR", "message": "File exceeds 10MB limit."}, 400)
 
     if not _allowed_file(file.filename, file.mimetype):
-        return jsonify({"error": "INVALID_IMAGE", "message": "Only JPEG/PNG images are accepted."}), 400
+        return None, ({"error": "INVALID_IMAGE", "message": "Only JPEG/PNG images are accepted."}, 400)
 
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     safe_name = secure_filename(file.filename)
     stored_name = f"{uuid.uuid4().hex}_{safe_name}"
     file_path = os.path.join(UPLOAD_DIR, stored_name)
     file.save(file_path)
-
-    product_name = request.form.get("product_name")
-    audit_date = request.form.get("audit_date") or date.today().isoformat()
-    source = request.form.get("source", "UPLOAD")
-    if source not in ("CAMERA", "UPLOAD", "ECOMMERCE_LISTING", "DEMO"):
-        source = "UPLOAD"
 
     with get_db() as cur:
         cur.execute(
@@ -81,9 +69,67 @@ def create_check():
 
     audit.log(g.user["id"], "CHECK_SUBMITTED", "compliance_check", check_id,
               metadata={"file": stored_name, "source": source})
+    return check_id, None
+
+
+@bp.post("")
+@require_auth
+def create_check():
+    """Accepts multipart/form-data: `image` file, optional `product_name`,
+    optional `audit_date` (ISO date, defaults to today)."""
+    if "image" not in request.files:
+        return jsonify({"error": "VALIDATION_ERROR", "message": "No image file provided."}), 400
+
+    file = request.files["image"]
+    product_name = request.form.get("product_name")
+    audit_date = request.form.get("audit_date") or date.today().isoformat()
+    source = request.form.get("source", "UPLOAD")
+    if source not in ("CAMERA", "UPLOAD", "ECOMMERCE_LISTING", "DEMO"):
+        source = "UPLOAD"
+
+    check_id, error = _create_single_check(file, product_name, audit_date, source)
+    if error:
+        body, status = error
+        return jsonify(body), status
 
     return jsonify({"check_id": check_id, "status": "QUEUED"}), 201
 
+
+@bp.post("/bulk")
+@require_auth
+def create_bulk_checks():
+    """Bulk upload: accepts multiple images under the `images` field in one
+    multipart/form-data request, creates a check for each, and processes
+    them one at a time synchronously (fine for demo-scale batches)."""
+    files = request.files.getlist("images")
+    if not files:
+        return jsonify({"error": "VALIDATION_ERROR", "message": "No image files provided under 'images'."}), 400
+    if len(files) > 20:
+        return jsonify({"error": "VALIDATION_ERROR", "message": "Bulk upload is limited to 20 images per request."}), 400
+
+    audit_date = request.form.get("audit_date") or date.today().isoformat()
+    source = request.form.get("source", "UPLOAD")
+    if source not in ("CAMERA", "UPLOAD", "ECOMMERCE_LISTING", "DEMO"):
+        source = "UPLOAD"
+
+    results = []
+    for file in files:
+        check_id, error = _create_single_check(file, None, audit_date, source)
+        if error:
+            body, _status = error
+            results.append({"filename": file.filename, "check_id": None,
+                             "status": "REJECTED", "message": body["message"]})
+            continue
+        try:
+            outcome = run_pipeline(check_id)
+            results.append({"filename": file.filename, "check_id": check_id, "status": outcome["status"]})
+        except Exception as exc:
+            results.append({"filename": file.filename, "check_id": check_id,
+                             "status": "PROCESSING_FAILED", "message": str(exc)})
+
+    audit.log(g.user["id"], "BULK_CHECK_SUBMITTED", "compliance_check", None,
+              metadata={"count": len(files)})
+    return jsonify({"results": results}), 201
 
 @bp.post("/<int:check_id>/process")
 @require_auth

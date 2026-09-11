@@ -60,6 +60,8 @@ const Api = (() => {
         me: () => request("/api/auth/me"),
 
         createCheck: (formData) => request("/api/checks", { method: "POST", body: formData, isFormData: true }),
+                createCheck: (formData) => request("/api/checks", { method: "POST", body: formData, isFormData: true }),
+        createBulkChecks: (formData) => request("/api/checks/bulk", { method: "POST", body: formData, isFormData: true }),
         processCheck: (id) => request(`/api/checks/${id}/process`, { method: "POST" }),
         listChecks: (filters = {}) => {
             const qs = new URLSearchParams();
