@@ -237,22 +237,7 @@ function renderScan() {
             <div id="bulk-actions" style="margin-top:14px;"></div>
             <div id="bulk-results" style="margin-top:16px;"></div>
         </div>
-                <div class="card">
-            <h3>Bulk Upload</h3>
-            <p class="subtitle" style="margin-top:0;">Scan up to 20 products in one batch -- useful for e-commerce/marketplace-style reviews.</p>
-            <input type="file" id="bulk-file-input" accept="image/jpeg,image/png" multiple />
-            <div id="bulk-selected-list" style="margin-top:10px;font-size:13px;color:#5b6b7c;"></div>
-            <div id="bulk-actions" style="margin-top:14px;"></div>
-            <div id="bulk-results" style="margin-top:16px;"></div>
-        </div>
-                <div class="card">
-            <h3>Bulk Upload</h3>
-            <p class="subtitle" style="margin-top:0;">Scan up to 20 products in one batch -- useful for e-commerce/marketplace-style reviews.</p>
-            <input type="file" id="bulk-file-input" accept="image/jpeg,image/png" multiple />
-            <div id="bulk-selected-list" style="margin-top:10px;font-size:13px;color:#5b6b7c;"></div>
-            <div id="bulk-actions" style="margin-top:14px;"></div>
-            <div id="bulk-results" style="margin-top:16px;"></div>
-        </div>
+        
         <div class="card">
             <h3>Or try a seeded demo scenario</h3>
             <p class="subtitle" style="margin-top:0;">Uses the same pipeline and database -- not a separate fake UI (PRD Part 31).</p>
