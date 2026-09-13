@@ -18,13 +18,26 @@ const VERDICT_LABELS = {
     INSUFFICIENT_EVIDENCE: "Insufficient evidence",
 };
 
+const ICONS = {
+    dashboard: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="11.5" y="2.5" width="6" height="6" rx="1"/><rect x="2.5" y="11.5" width="6" height="6" rx="1"/><rect x="11.5" y="11.5" width="6" height="6" rx="1"/></svg>`,
+    scan: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7.2"/><path d="M10 6.5v7M6.5 10h7"/></svg>`,
+    history: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="2.5" width="14" height="15" rx="1.5"/><path d="M6.5 7h7M6.5 10h7M6.5 13h4.5"/></svg>`,
+    review: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M10 3.2l8 14.3H2z"/><path d="M10 8.3v4"/><circle cx="10" cy="14.6" r="0.6" fill="currentColor" stroke="none"/></svg>`,
+    rules: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v14M6 17h8M10 5l-4.5 1.2M10 5l4.5 1.2M2.8 10.2l2.7-4.2 2.7 4.2a2.4 2.4 0 01-5.4 0zM11.8 10.2l2.7-4.2 2.7 4.2a2.4 2.4 0 01-5.4 0z"/></svg>`,
+    audit: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5.5h14M3 10h14M3 14.5h9"/></svg>`,
+    camera: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 012-2h1.2l1-1.6A1.5 1.5 0 019.5 3.6h5a1.5 1.5 0 011.3.8L17 6h1a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3.4"/></svg>`,
+    cameraLarge: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 012-2h1.2l1-1.6A1.5 1.5 0 019.5 3.6h5a1.5 1.5 0 011.3.8L17 6h1a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3.4"/></svg>`,
+    clipboard: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2.5" width="6" height="3" rx="1"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4"/></svg>`,
+    checkCircle: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>`,
+};
+
 const NAV_ITEMS = [
-    { path: "#/dashboard", label: "Dashboard", icon: "\u25A4", roles: null },
-    { path: "#/scan", label: "Scan Product", icon: "\u2795", roles: null },
-    { path: "#/checks", label: "Inspection History", icon: "\u2637", roles: null },
-    { path: "#/reviews", label: "Review Queue", icon: "\u26A0", roles: null },
-    { path: "#/admin/rules", label: "Regulatory Rules", icon: "\u2696", roles: ["ADMIN"] },
-    { path: "#/audit", label: "Audit Log", icon: "\u2261", roles: ["ADMIN", "SENIOR_OFFICER"] },
+    { path: "#/dashboard", label: "Dashboard", icon: ICONS.dashboard, roles: null },
+    { path: "#/scan", label: "Scan Product", icon: ICONS.scan, roles: null },
+    { path: "#/checks", label: "Inspection History", icon: ICONS.history, roles: null },
+    { path: "#/reviews", label: "Review Queue", icon: ICONS.review, roles: null },
+    { path: "#/admin/rules", label: "Regulatory Rules", icon: ICONS.rules, roles: ["ADMIN"] },
+    { path: "#/audit", label: "Audit Log", icon: ICONS.audit, roles: ["ADMIN", "SENIOR_OFFICER"] },
 ];
 
 function el(html) {
@@ -212,10 +225,10 @@ function renderScan() {
         </div>
         <div class="card">
             <div class="toolbar" style="margin-bottom:14px;">
-                <button class="secondary" id="take-photo-btn">\u{1F4F8} Take Photo (Camera)</button>
+                <button class="secondary" id="take-photo-btn"><span style="display:inline-flex;vertical-align:middle;margin-right:6px;">${ICONS.camera}</span>Take Photo (Camera)</button>
             </div>
             <div class="dropzone" id="dropzone">
-                <div class="icon">\u{1F4F7}</div>
+                <div class="icon">${ICONS.cameraLarge}</div>
                 <p><strong>Click to upload</strong> or drag a label photo here</p>
                 <p>JPEG or PNG, up to 10MB</p>
                 <input type="file" id="file-input" accept="image/jpeg,image/png" style="display:none;" />
@@ -530,7 +543,7 @@ async function loadAndRenderChecksList() {
                 <tbody>${rows}</tbody>
             </table>` : `
             <div class="empty-state">
-                <div class="icon">\u{1F4CB}</div>
+                <div class="icon">${ICONS.clipboard}</div>
                 <p>${hasActiveFilters ? "No checks match these filters." : "No compliance checks yet."}</p>
                 ${hasActiveFilters ? "" : '<button class="primary" onclick="window.location.hash=\'#/scan\'">Scan a Product</button>'}
             </div>`}
@@ -696,7 +709,7 @@ async function renderReviewQueue() {
     if (!data.reviews.length) {
         mainContent().innerHTML = `
             <div class="page-header"><div><h2>Review Queue</h2></div></div>
-            <div class="card"><div class="empty-state"><div class="icon">\u2705</div><p>No pending reviews. Everything above the confidence threshold has been auto-resolved.</p></div></div>`;
+            <div class="card"><div class="empty-state"><div class="icon">${ICONS.checkCircle}</div><p>No pending reviews. Everything above the confidence threshold has been auto-resolved.</p></div></div>`;
         return;
     }
 

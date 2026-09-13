@@ -151,7 +151,7 @@ table.data-table tr:hover { background: var(--surface); cursor: pointer; }
     background: white; cursor: pointer; transition: border-color 0.15s;
 }
 .dropzone:hover, .dropzone.dragover { border-color: var(--navy); background: #f0f5fa; }
-.dropzone .icon { font-size: 40px; margin-bottom: 10px; }
+.dropzone .icon { margin-bottom: 10px; color: var(--text-muted); }
 .dropzone p { margin: 4px 0; color: var(--text-muted); font-size: 13.5px; }
 .preview-image { max-width: 320px; max-height: 320px; border-radius: var(--radius); border: 1px solid var(--border); }
 
@@ -179,7 +179,7 @@ table.data-table tr:hover { background: var(--surface); cursor: pointer; }
 .limitation-note { background: #fff8ec; border: 1px solid #f0d9a8; border-radius: var(--radius); padding: 12px 16px; font-size: 12.5px; color: #7a5b13; margin: 16px 0; }
 
 .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); }
-.empty-state .icon { font-size: 36px; margin-bottom: 10px; }
+.empty-state .icon { margin-bottom: 10px; }
 
 .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
 
