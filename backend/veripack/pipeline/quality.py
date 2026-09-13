@@ -57,7 +57,17 @@ def _curvature_estimate(gray: np.ndarray) -> float:
     vertex_penalty = max(0.0, (len(approx) - 4)) / 10.0
     return float(min(1.0, irregularity + vertex_penalty))
 
-
+def downscale_if_needed(image_bgr: np.ndarray, max_dimension: int = 1800) -> np.ndarray:
+    """Real phone photos are 3000-4000px+ -- processing full resolution
+    uses too much memory on a small free-tier server and can crash the
+    request. Downscale before any other processing."""
+    h, w = image_bgr.shape[:2]
+    longest_side = max(h, w)
+    if longest_side <= max_dimension:
+        return image_bgr
+    scale = max_dimension / longest_side
+    new_size = (int(w * scale), int(h * scale))
+    return cv2.resize(image_bgr, new_size, interpolation=cv2.INTER_AREA)
 def assess_image_quality(image_bgr: np.ndarray) -> dict:
     """Returns a quality report used both to gate the pipeline and to feed
     the confidence model (docs/AI_PIPELINE.md)."""

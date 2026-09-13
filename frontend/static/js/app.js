@@ -224,14 +224,18 @@ function renderScan() {
             <div><h2>Scan Product</h2><p class="subtitle">Upload a label photo for real-time compliance screening.</p></div>
         </div>
         <div class="card">
-            <div class="toolbar" style="margin-bottom:14px;">
-                <button class="secondary" id="take-photo-btn"><span style="display:inline-flex;vertical-align:middle;margin-right:6px;">${ICONS.camera}</span>Take Photo (Camera)</button>
-            </div>
-            <div class="dropzone" id="dropzone">
-                <div class="icon">${ICONS.cameraLarge}</div>
-                <p><strong>Click to upload</strong> or drag a label photo here</p>
-                <p>JPEG or PNG, up to 10MB</p>
-                <input type="file" id="file-input" accept="image/jpeg,image/png" style="display:none;" />
+            <div class="scan-input-grid" id="scan-input-grid">
+                <div class="dropzone" id="dropzone">
+                    <div class="icon">${ICONS.cameraLarge}</div>
+                    <p><strong>Click to upload</strong> or drag a label photo here</p>
+                    <p>JPEG or PNG, up to 10MB</p>
+                    <input type="file" id="file-input" accept="image/jpeg,image/png" style="display:none;" />
+                </div>
+                <div class="dropzone" id="camera-trigger">
+                    <div class="icon">${ICONS.cameraLarge}</div>
+                    <p><strong>Take Photo</strong></p>
+                    <p>Use your device camera</p>
+                </div>
             </div>
             <div id="camera-panel" style="display:none;margin-top:16px;"></div>
             <div id="preview-area" style="margin-top:16px;"></div>
@@ -286,7 +290,7 @@ function renderScan() {
     }
 
     // ---- Direct camera capture ----
-    const takePhotoBtn = document.getElementById("take-photo-btn");
+    const takePhotoBtn = document.getElementById("camera-trigger");
     const cameraPanel = document.getElementById("camera-panel");
 
     takePhotoBtn.addEventListener("click", openCamera);
@@ -311,7 +315,7 @@ function renderScan() {
                 </div>
                 <p class="subtitle" id="camera-status">Requesting camera access...</p>
             </div>`;
-        document.getElementById("dropzone").style.display = "none";
+        document.getElementById("scan-input-grid").style.display = "none";
         document.getElementById("cancel-camera-btn").addEventListener("click", closeCamera);
 
         try {
@@ -354,7 +358,7 @@ function renderScan() {
         stopActiveCameraStream();
         cameraPanel.style.display = "none";
         cameraPanel.innerHTML = "";
-        document.getElementById("dropzone").style.display = "";
+        document.getElementById("scan-input-grid").style.display = "";
     }
 
     async function submitScan() {
@@ -724,9 +728,7 @@ async function renderReviewQueue() {
             </div>
             <div class="req-reason">${escapeHtml(r.reason)}</div>
             <div class="toolbar" style="margin-top:12px;margin-bottom:0;">
-                <button class="secondary" data-action="confirm" data-task="${r.id}">Confirm AI Verdict</button>
-                <button class="secondary" data-action="correct" data-task="${r.id}">Correct Verdict</button>
-                <button class="secondary" data-action="insufficient" data-task="${r.id}">Mark Insufficient</button>
+                <button class="primary" data-task="${r.id}">Review This Item</button>
                 <a href="#/checks/${r.check_id}" style="font-size:13px;">View full check &rarr;</a>
             </div>
         </div>`).join("");
@@ -735,57 +737,97 @@ async function renderReviewQueue() {
         <div class="page-header"><div><h2>Review Queue</h2><p class="subtitle">${data.reviews.length} item(s) below the confidence threshold, awaiting officer verification.</p></div></div>
         ${rows}`;
 
-    mainContent().querySelectorAll("button[data-action]").forEach((btn) => {
-        btn.addEventListener("click", () => openReviewModal(btn.dataset.task, btn.dataset.action));
+    mainContent().querySelectorAll("button[data-task]").forEach((btn) => {
+        const item = data.reviews.find((r) => String(r.id) === btn.dataset.task);
+        btn.addEventListener("click", () => openReviewModal(item));
     });
 }
 
-function openReviewModal(taskId, action) {
+function openReviewModal(item) {
     const overlay = el(`<div class="modal-overlay"></div>`);
-    let bodyHtml = "";
-    if (action === "confirm") {
-        bodyHtml = `<p>Confirm the AI-generated verdict as correct. This will be logged with your officer ID.</p>
-            <label>Reason / note</label><textarea id="review-reason" rows="3"></textarea>`;
-    } else if (action === "correct") {
-        bodyHtml = `<p>Provide the corrected verdict. The original AI result is preserved in history, not overwritten.</p>
-            <label>Corrected verdict</label>
-            <select id="corrected-verdict">
-                <option value="COMPLIANT">Compliant with checked requirements</option>
-                <option value="POTENTIAL_NON_COMPLIANCE">Potential non-compliance detected</option>
-                <option value="REQUIRES_OFFICER_VERIFICATION">Requires officer verification</option>
-                <option value="INSUFFICIENT_EVIDENCE">Insufficient evidence</option>
-            </select>
-            <label>Reason (required)</label><textarea id="review-reason" rows="3"></textarea>`;
-    } else {
-        bodyHtml = `<p>Mark this requirement as insufficient evidence.</p>
-            <label>Reason (required)</label><textarea id="review-reason" rows="3"></textarea>`;
-    }
 
     overlay.innerHTML = `
         <div class="modal-box">
-            <h3>Officer Review</h3>
-            ${bodyHtml}
-            <div id="modal-error"></div>
-            <div class="toolbar" style="margin-top:16px;">
-                <button class="primary" id="modal-submit">Submit Decision</button>
+            <h3>${escapeHtml(item.requirement_name)}</h3>
+            <p class="req-meta" style="margin-top:-6px;">Check #${item.check_id} &middot; ${escapeHtml(item.rule_reference)}</p>
+            <p style="margin:14px 0;">${verdictBadge(item.verdict)} <span style="color:var(--text-muted);font-size:13px;">(${Math.round(item.confidence * 100)}% confidence)</span></p>
+            <p class="req-reason" style="margin-bottom:18px;">${escapeHtml(item.reason)}</p>
+
+            <div id="review-step-choose">
+                <p style="font-weight:600;margin-bottom:10px;">Is this AI result correct?</p>
+                <div class="toolbar" style="margin-bottom:0;">
+                    <button class="primary" id="agree-btn">Yes, this is correct</button>
+                    <button class="secondary" id="change-btn">No, I need to change it</button>
+                </div>
+            </div>
+
+            <div id="review-step-change" style="display:none;">
+                <label>What is the correct verdict?</label>
+                <select id="corrected-verdict">
+                    <option value="COMPLIANT">Compliant with checked requirements</option>
+                    <option value="POTENTIAL_NON_COMPLIANCE">Potential non-compliance detected</option>
+                    <option value="REQUIRES_OFFICER_VERIFICATION">Requires officer verification</option>
+                    <option value="INSUFFICIENT_EVIDENCE">Insufficient evidence</option>
+                </select>
+                <label>Why? (required)</label>
+                <textarea id="review-reason" rows="3" placeholder="e.g. Verified the physical label in person"></textarea>
+                <div id="modal-error"></div>
+                <div class="toolbar" style="margin-top:16px;">
+                    <button class="primary" id="save-change-btn">Save Change</button>
+                    <button class="secondary" id="back-btn">Back</button>
+                </div>
+            </div>
+
+            <div class="toolbar" style="margin-top:16px;" id="cancel-row">
                 <button class="secondary" id="modal-cancel">Cancel</button>
             </div>
         </div>`;
     document.body.appendChild(overlay);
 
+    const chooseStep = overlay.querySelector("#review-step-choose");
+    const changeStep = overlay.querySelector("#review-step-change");
+    const cancelRow = overlay.querySelector("#cancel-row");
+
     overlay.querySelector("#modal-cancel").addEventListener("click", () => overlay.remove());
-    overlay.querySelector("#modal-submit").addEventListener("click", async () => {
+
+    overlay.querySelector("#agree-btn").addEventListener("click", async () => {
+        try {
+            await Api.submitReviewDecision(item.id, {
+                decision: "CONFIRM",
+                reason: "Confirmed correct by officer.",
+            });
+            overlay.remove();
+            renderReviewQueue();
+        } catch (err) {
+            alert(err.message);
+        }
+    });
+
+    overlay.querySelector("#change-btn").addEventListener("click", () => {
+        chooseStep.style.display = "none";
+        cancelRow.style.display = "none";
+        changeStep.style.display = "block";
+    });
+
+    overlay.querySelector("#back-btn").addEventListener("click", () => {
+        changeStep.style.display = "none";
+        chooseStep.style.display = "block";
+        cancelRow.style.display = "flex";
+    });
+
+    overlay.querySelector("#save-change-btn").addEventListener("click", async () => {
         const reason = overlay.querySelector("#review-reason").value.trim();
+        const correctedVerdict = overlay.querySelector("#corrected-verdict").value;
         if (!reason) {
-            overlay.querySelector("#modal-error").innerHTML = `<div class="error-banner">A reason is required.</div>`;
+            overlay.querySelector("#modal-error").innerHTML = `<div class="error-banner">Please briefly say why.</div>`;
             return;
         }
-        const decisionMap = { confirm: "CONFIRM", correct: "CORRECT", insufficient: "MARK_INSUFFICIENT" };
-        const payload = { decision: decisionMap[action], reason };
-        if (action === "correct") payload.corrected_verdict = overlay.querySelector("#corrected-verdict").value;
-
         try {
-            await Api.submitReviewDecision(taskId, payload);
+            await Api.submitReviewDecision(item.id, {
+                decision: "CORRECT",
+                corrected_verdict: correctedVerdict,
+                reason,
+            });
             overlay.remove();
             renderReviewQueue();
         } catch (err) {

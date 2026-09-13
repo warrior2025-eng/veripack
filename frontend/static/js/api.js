@@ -22,17 +22,32 @@ const Api = (() => {
         else localStorage.removeItem("veripack_user");
     }
 
+    async function fetchWithRetry(path, options, method) {
+        const maxRetries = method === "GET" ? 2 : 0;
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                return await fetch(path, options);
+            } catch (networkErr) {
+                if (attempt < maxRetries) {
+                    await new Promise((resolve) => setTimeout(resolve, 2500));
+                } else {
+                    throw new Error("Could not reach the server. It may still be waking up -- please try again in a few seconds.");
+                }
+            }
+        }
+    }
+
     async function request(path, { method = "GET", body = null, isFormData = false } = {}) {
         const headers = {};
         const t = token();
         if (t) headers["Authorization"] = `Bearer ${t}`;
         if (body && !isFormData) headers["Content-Type"] = "application/json";
 
-        const resp = await fetch(path, {
+        const resp = await fetchWithRetry(path, {
             method,
             headers,
             body: isFormData ? body : (body ? JSON.stringify(body) : undefined),
-        });
+        }, method);
 
         if (resp.status === 401) {
             setToken(null);

@@ -45,6 +45,7 @@ def run_pipeline(check_id: int) -> dict:
     try:
         image_path = image_row["file_path"]
         image_bgr = ocr_module.load_image(image_path)
+        image_bgr = quality.downscale_if_needed(image_bgr)
 
         # STAGE 1: Image quality gate
         quality_report = quality.assess_image_quality(image_bgr)
