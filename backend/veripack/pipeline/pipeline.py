@@ -71,6 +71,7 @@ def run_pipeline(check_id: int) -> dict:
         regions = _ocr_service.extract_regions(preprocessed)
         lines = _ocr_service.reconstruct_lines(regions)
         all_text = " ".join(l["text"] for l in lines)
+        print(f"[DEBUG check_id={check_id}] image_path={image_path} words_detected={len(regions)} ocr_text_sample={all_text[:200]!r}", flush=True)
 
         # STAGE 4 + 5: Field extraction + normalization (normalization happens
         # inside extraction.py at parse time, per field)
@@ -79,6 +80,7 @@ def run_pipeline(check_id: int) -> dict:
         # STAGE 6: Category classification
         cat_result = category_module.classify_category(all_text)
         category_code = cat_result["category"]
+        print(f"[DEBUG check_id={check_id}] category={category_code} confidence={cat_result['confidence']} fields_extracted={len(fields)}", flush=True)
 
         if category_code not in category_module.SUPPORTED_CATEGORIES:
             with get_db() as cur:
