@@ -146,8 +146,8 @@ def _evaluate_format(requirement: dict, extracted_fields: list, image_quality: d
     reason = f"{requirement['requirement_name']} detected and correctly formatted: {normalized}."
     if requirement["field_type"] == "NET_QUANTITY":
         reason += (" Note: this confirms a net-quantity DECLARATION exists in the correct format. "
-                   "VeriPack cannot verify the physical quantity inside the package from an image -- "
-                   "that requires metrological weighing under the Sixth Schedule.")
+                   "VeriPack cannot verify the physical quantity inside the package from an image. "
+                   "That requires metrological weighing under the Sixth Schedule.")
     return verdict, confidence, reason
 
 

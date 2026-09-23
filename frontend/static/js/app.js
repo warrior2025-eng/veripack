@@ -12,56 +12,86 @@
  */
 
 const VERDICT_LABELS = {
-    COMPLIANT: "Compliant with checked requirements",
-    POTENTIAL_NON_COMPLIANCE: "Potential non-compliance detected",
-    REQUIRES_OFFICER_VERIFICATION: "Requires officer verification",
-    INSUFFICIENT_EVIDENCE: "Insufficient evidence",
+  COMPLIANT: "Compliant with checked requirements",
+  POTENTIAL_NON_COMPLIANCE: "Potential non-compliance detected",
+  REQUIRES_OFFICER_VERIFICATION: "Requires officer verification",
+  INSUFFICIENT_EVIDENCE: "Insufficient evidence",
 };
 
 const ICONS = {
-    dashboard: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="11.5" y="2.5" width="6" height="6" rx="1"/><rect x="2.5" y="11.5" width="6" height="6" rx="1"/><rect x="11.5" y="11.5" width="6" height="6" rx="1"/></svg>`,
-    scan: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7.2"/><path d="M10 6.5v7M6.5 10h7"/></svg>`,
-    history: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="2.5" width="14" height="15" rx="1.5"/><path d="M6.5 7h7M6.5 10h7M6.5 13h4.5"/></svg>`,
-    review: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M10 3.2l8 14.3H2z"/><path d="M10 8.3v4"/><circle cx="10" cy="14.6" r="0.6" fill="currentColor" stroke="none"/></svg>`,
-    rules: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v14M6 17h8M10 5l-4.5 1.2M10 5l4.5 1.2M2.8 10.2l2.7-4.2 2.7 4.2a2.4 2.4 0 01-5.4 0zM11.8 10.2l2.7-4.2 2.7 4.2a2.4 2.4 0 01-5.4 0z"/></svg>`,
-    audit: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5.5h14M3 10h14M3 14.5h9"/></svg>`,
-    camera: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 012-2h1.2l1-1.6A1.5 1.5 0 019.5 3.6h5a1.5 1.5 0 011.3.8L17 6h1a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3.4"/></svg>`,
-    cameraLarge: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 012-2h1.2l1-1.6A1.5 1.5 0 019.5 3.6h5a1.5 1.5 0 011.3.8L17 6h1a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3.4"/></svg>`,
-    clipboard: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2.5" width="6" height="3" rx="1"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4"/></svg>`,
-    checkCircle: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>`,
+  dashboard: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="11.5" y="2.5" width="6" height="6" rx="1"/><rect x="2.5" y="11.5" width="6" height="6" rx="1"/><rect x="11.5" y="11.5" width="6" height="6" rx="1"/></svg>`,
+  scan: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7.2"/><path d="M10 6.5v7M6.5 10h7"/></svg>`,
+  history: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="2.5" width="14" height="15" rx="1.5"/><path d="M6.5 7h7M6.5 10h7M6.5 13h4.5"/></svg>`,
+  review: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M10 3.2l8 14.3H2z"/><path d="M10 8.3v4"/><circle cx="10" cy="14.6" r="0.6" fill="currentColor" stroke="none"/></svg>`,
+  rules: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v14M6 17h8M10 5l-4.5 1.2M10 5l4.5 1.2M2.8 10.2l2.7-4.2 2.7 4.2a2.4 2.4 0 01-5.4 0zM11.8 10.2l2.7-4.2 2.7 4.2a2.4 2.4 0 01-5.4 0z"/></svg>`,
+  audit: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5.5h14M3 10h14M3 14.5h9"/></svg>`,
+  camera: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 012-2h1.2l1-1.6A1.5 1.5 0 019.5 3.6h5a1.5 1.5 0 011.3.8L17 6h1a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3.4"/></svg>`,
+  cameraLarge: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 012-2h1.2l1-1.6A1.5 1.5 0 019.5 3.6h5a1.5 1.5 0 011.3.8L17 6h1a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3.4"/></svg>`,
+  clipboard: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2.5" width="6" height="3" rx="1"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4"/></svg>`,
+  checkCircle: `<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>`,
 };
 
 const NAV_ITEMS = [
-    { path: "#/dashboard", label: "Dashboard", icon: ICONS.dashboard, roles: null },
-    { path: "#/scan", label: "Scan Product", icon: ICONS.scan, roles: null },
-    { path: "#/checks", label: "Inspection History", icon: ICONS.history, roles: null },
-    { path: "#/reviews", label: "Review Queue", icon: ICONS.review, roles: null },
-    { path: "#/admin/rules", label: "Regulatory Rules", icon: ICONS.rules, roles: ["ADMIN"] },
-    { path: "#/audit", label: "Audit Log", icon: ICONS.audit, roles: ["ADMIN", "SENIOR_OFFICER"] },
+  {
+    path: "#/dashboard",
+    label: "Dashboard",
+    icon: ICONS.dashboard,
+    roles: null,
+  },
+  { path: "#/scan", label: "Scan Product", icon: ICONS.scan, roles: null },
+  {
+    path: "#/checks",
+    label: "Inspection History",
+    icon: ICONS.history,
+    roles: null,
+  },
+  { path: "#/reviews", label: "Review Queue", icon: ICONS.review, roles: null },
+  {
+    path: "#/admin/rules",
+    label: "Regulatory Rules",
+    icon: ICONS.rules,
+    roles: ["ADMIN"],
+  },
+  {
+    path: "#/audit",
+    label: "Audit Log",
+    icon: ICONS.audit,
+    roles: ["ADMIN", "SENIOR_OFFICER"],
+  },
 ];
 
 function el(html) {
-    const t = document.createElement("template");
-    t.innerHTML = html.trim();
-    return t.content.firstElementChild;
+  const t = document.createElement("template");
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
 }
 
 function escapeHtml(str) {
-    if (str === null || str === undefined) return "";
-    return String(str).replace(/[&<>"']/g, (c) => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-    }[c]));
+  if (str === null || str === undefined) return "";
+  return String(str).replace(
+    /[&<>"']/g,
+    (c) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[c],
+  );
 }
 
 function fmtDate(iso) {
-    if (!iso) return "-";
-    try {
-        return new Date(iso.replace(" ", "T") + "Z").toLocaleString();
-    } catch { return iso; }
+  if (!iso) return "-";
+  try {
+    return new Date(iso.replace(" ", "T") + "Z").toLocaleString();
+  } catch {
+    return iso;
+  }
 }
 
 function verdictBadge(verdict) {
-    return `<span class="badge ${verdict}">${VERDICT_LABELS[verdict] || verdict}</span>`;
+  return `<span class="badge ${verdict}">${VERDICT_LABELS[verdict] || verdict}</span>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -69,15 +99,20 @@ function verdictBadge(verdict) {
 // ---------------------------------------------------------------------------
 
 function renderShell(activePath, contentHtml) {
-    const user = Api.currentUser();
-    const app = document.getElementById("app");
-    const nav = NAV_ITEMS
-        .filter((item) => !item.roles || item.roles.includes(user.role))
-        .map((item) => `<a href="${item.path}" class="${activePath.startsWith(item.path) ? "active" : ""}">
-            <span>${item.icon}</span> ${item.label}</a>`)
-        .join("");
+  const user = Api.currentUser();
+  const app = document.getElementById("app");
+  const nav = NAV_ITEMS.filter(
+    (item) => !item.roles || item.roles.includes(user.role),
+  )
+    .map(
+      (
+        item,
+      ) => `<a href="${item.path}" class="${activePath.startsWith(item.path) ? "active" : ""}">
+            <span>${item.icon}</span> ${item.label}</a>`,
+    )
+    .join("");
 
-    app.innerHTML = `
+  app.innerHTML = `
     <div class="app-shell">
         <div class="sidebar">
             <div class="brand">
@@ -94,16 +129,16 @@ function renderShell(activePath, contentHtml) {
         <div class="main" id="main-content">${contentHtml}</div>
     </div>`;
 
-    document.getElementById("logout-link").addEventListener("click", (e) => {
-        e.preventDefault();
-        Api.setToken(null);
-        Api.setCurrentUser(null);
-        window.location.hash = "#/login";
-    });
+  document.getElementById("logout-link").addEventListener("click", (e) => {
+    e.preventDefault();
+    Api.setToken(null);
+    Api.setCurrentUser(null);
+    window.location.hash = "#/login";
+  });
 }
 
 function mainContent() {
-    return document.getElementById("main-content");
+  return document.getElementById("main-content");
 }
 
 // ---------------------------------------------------------------------------
@@ -111,7 +146,7 @@ function mainContent() {
 // ---------------------------------------------------------------------------
 
 function renderLogin() {
-    document.getElementById("app").innerHTML = `
+  document.getElementById("app").innerHTML = `
     <div class="login-screen">
         <div class="login-card">
             <p class="brand-title">VeriPack</p>
@@ -132,20 +167,22 @@ function renderLogin() {
         </div>
     </div>`;
 
-    document.getElementById("login-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = document.getElementById("login-email").value;
-        const password = document.getElementById("login-password").value;
-        const errorBox = document.getElementById("login-error");
-        errorBox.innerHTML = "";
-        try {
-            const res = await Api.login(email, password);
-            Api.setToken(res.token);
-            Api.setCurrentUser(res.user);
-            window.location.hash = "#/dashboard";
-        } catch (err) {
-            errorBox.innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        }
+  document
+    .getElementById("login-form")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+      const errorBox = document.getElementById("login-error");
+      errorBox.innerHTML = "";
+      try {
+        const res = await Api.login(email, password);
+        Api.setToken(res.token);
+        Api.setCurrentUser(res.user);
+        window.location.hash = "#/dashboard";
+      } catch (err) {
+        errorBox.innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+      }
     });
 }
 
@@ -154,36 +191,47 @@ function renderLogin() {
 // ---------------------------------------------------------------------------
 
 async function renderDashboard() {
-    renderShell("#/dashboard", `<div class="empty-state">Loading dashboard...<br/><span class="spinner"></span></div>`);
-    let summary;
-    try {
-        summary = await Api.dashboardSummary();
-    } catch (err) {
-        mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        return;
-    }
-    const v = summary.verdict_counts;
+  renderShell(
+    "#/dashboard",
+    `<div class="empty-state">Loading dashboard...<br/><span class="spinner"></span></div>`,
+  );
+  let summary;
+  try {
+    summary = await Api.dashboardSummary();
+  } catch (err) {
+    mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    return;
+  }
+  const v = summary.verdict_counts;
 
-    const recentRows = summary.recent_checks.length
-        ? summary.recent_checks.map((c) => `
+  const recentRows = summary.recent_checks.length
+    ? summary.recent_checks
+        .map(
+          (c) => `
             <tr onclick="window.location.hash='#/checks/${c.id}'">
                 <td>#${c.id}</td><td>${escapeHtml(c.product_name || "-")}</td>
                 <td>${escapeHtml(c.category || "-")}</td>
                 <td><span class="status-pill">${c.status}</span></td>
                 <td>${fmtDate(c.created_at)}</td>
-            </tr>`).join("")
-        : `<tr><td colspan="5" style="text-align:center;color:#5b6b7c;padding:24px;">No compliance checks yet. Try "Scan Product".</td></tr>`;
+            </tr>`,
+        )
+        .join("")
+    : `<tr><td colspan="5" style="text-align:center;color:#5b6b7c;padding:24px;">No compliance checks yet. Try "Scan Product".</td></tr>`;
 
-    const ruleRows = summary.rule_version_usage.length
-        ? summary.rule_version_usage.map((r) => `
+  const ruleRows = summary.rule_version_usage.length
+    ? summary.rule_version_usage
+        .map(
+          (r) => `
             <tr><td>${escapeHtml(r.name)} (v${escapeHtml(r.version_label)})</td>
                 <td><span class="status-pill">${r.status}</span></td>
-                <td>${r.usage_count}</td></tr>`).join("")
-        : `<tr><td colspan="3" style="text-align:center;color:#5b6b7c;padding:16px;">No rule versions yet.</td></tr>`;
+                <td>${r.usage_count}</td></tr>`,
+        )
+        .join("")
+    : `<tr><td colspan="3" style="text-align:center;color:#5b6b7c;padding:16px;">No rule versions yet.</td></tr>`;
 
-    mainContent().innerHTML = `
+  mainContent().innerHTML = `
         <div class="page-header">
-            <div><h2>Enforcement Dashboard</h2><p class="subtitle">Live data from the compliance database -- no fabricated figures.</p></div>
+            <div><h2>Enforcement Dashboard</h2><p class="subtitle">Live data from the compliance database.</p></div>
         </div>
         <div class="stat-grid">
             <div class="stat-box"><div class="value">${summary.total_checks}</div><div class="label">Total Checks</div></div>
@@ -214,12 +262,19 @@ async function renderDashboard() {
 // ---------------------------------------------------------------------------
 
 const STAGE_LABELS = [
-    "Image Quality", "Panel Detection", "OCR", "Field Extraction",
-    "Category Detection", "Rule Matching", "Evidence Generation",
+  "Image Quality",
+  "Panel Detection",
+  "OCR",
+  "Field Extraction",
+  "Category Detection",
+  "Rule Matching",
+  "Evidence Generation",
 ];
 
 function renderScan() {
-    renderShell("#/scan", `
+  renderShell(
+    "#/scan",
+    `
         <div class="page-header">
             <div><h2>Scan Product</h2><p class="subtitle">Upload a label photo for real-time compliance screening.</p></div>
         </div>
@@ -248,7 +303,7 @@ function renderScan() {
         </div>
         <div class="card">
             <h3>Bulk Upload</h3>
-            <p class="subtitle" style="margin-top:0;">Scan up to 20 products in one batch -- useful for e-commerce/marketplace-style reviews.</p>
+            <p class="subtitle" style="margin-top:0;">Scan up to 20 products in one batch. Useful for e-commerce or marketplace-style reviews.</p>
             <input type="file" id="bulk-file-input" accept="image/jpeg,image/png" multiple />
             <div id="bulk-selected-list" style="margin-top:10px;font-size:13px;color:#5b6b7c;"></div>
             <div id="bulk-actions" style="margin-top:14px;"></div>
@@ -257,55 +312,63 @@ function renderScan() {
         
         <div class="card">
             <h3>Or try a seeded demo scenario</h3>
-            <p class="subtitle" style="margin-top:0;">Uses the same pipeline and database -- not a separate fake UI (PRD Part 31).</p>
+                            <p class="subtitle" style="margin-top:0;">Uses the same pipeline and database as a real scan.</p>
             <div class="toolbar">
                 <button class="secondary" onclick="window.location.hash='#/checks'">View seeded demo checks in Inspection History</button>
             </div>
-        </div>`);
+        </div>`,
+  );
 
-    let selectedFile = null;
-    const dropzone = document.getElementById("dropzone");
-    const fileInput = document.getElementById("file-input");
+  let selectedFile = null;
+  const dropzone = document.getElementById("dropzone");
+  const fileInput = document.getElementById("file-input");
 
-    dropzone.addEventListener("click", () => fileInput.click());
-    dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("dragover"); });
-    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
-    dropzone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        dropzone.classList.remove("dragover");
-        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
-    });
-    fileInput.addEventListener("change", () => {
-        if (fileInput.files.length) handleFile(fileInput.files[0]);
-    });
+  dropzone.addEventListener("click", () => fileInput.click());
+  dropzone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropzone.classList.add("dragover");
+  });
+  dropzone.addEventListener("dragleave", () =>
+    dropzone.classList.remove("dragover"),
+  );
+  dropzone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropzone.classList.remove("dragover");
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files.length) handleFile(fileInput.files[0]);
+  });
 
-    function handleFile(file) {
-        selectedFile = file;
-        const url = URL.createObjectURL(file);
-        document.getElementById("preview-area").innerHTML =
-            `<img src="${url}" class="preview-image" />`;
-        document.getElementById("scan-actions").innerHTML =
-            `<button class="primary" id="submit-scan-btn">Run Compliance Scan</button>`;
-        document.getElementById("submit-scan-btn").addEventListener("click", submitScan);
+  function handleFile(file) {
+    selectedFile = file;
+    const url = URL.createObjectURL(file);
+    document.getElementById("preview-area").innerHTML =
+      `<img src="${url}" class="preview-image" />`;
+    document.getElementById("scan-actions").innerHTML =
+      `<button class="primary" id="submit-scan-btn">Run Compliance Scan</button>`;
+    document
+      .getElementById("submit-scan-btn")
+      .addEventListener("click", submitScan);
+  }
+
+  // ---- Direct camera capture ----
+  const takePhotoBtn = document.getElementById("camera-trigger");
+  const cameraPanel = document.getElementById("camera-panel");
+
+  takePhotoBtn.addEventListener("click", openCamera);
+
+  async function openCamera() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      cameraPanel.style.display = "block";
+      cameraPanel.innerHTML = `<div class="error-banner">Camera access is not supported in this browser. Please use "Click to upload" instead.</div>`;
+      return;
     }
 
-    // ---- Direct camera capture ----
-    const takePhotoBtn = document.getElementById("camera-trigger");
-    const cameraPanel = document.getElementById("camera-panel");
+    stopActiveCameraStream();
 
-    takePhotoBtn.addEventListener("click", openCamera);
-
-    async function openCamera() {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            cameraPanel.style.display = "block";
-            cameraPanel.innerHTML = `<div class="error-banner">Camera access is not supported in this browser. Please use "Click to upload" instead.</div>`;
-            return;
-        }
-
-        stopActiveCameraStream();
-
-        cameraPanel.style.display = "block";
-        cameraPanel.innerHTML = `
+    cameraPanel.style.display = "block";
+    cameraPanel.innerHTML = `
             <div style="text-align:center;">
                 <video id="camera-video" autoplay playsinline muted
                     style="width:100%;max-width:420px;border-radius:8px;border:1px solid var(--border);background:#000;"></video>
@@ -315,149 +378,170 @@ function renderScan() {
                 </div>
                 <p class="subtitle" id="camera-status">Requesting camera access...</p>
             </div>`;
-        document.getElementById("scan-input-grid").style.display = "none";
-        document.getElementById("cancel-camera-btn").addEventListener("click", closeCamera);
+    document.getElementById("scan-input-grid").style.display = "none";
+    document
+      .getElementById("cancel-camera-btn")
+      .addEventListener("click", closeCamera);
 
-        try {
-            _activeCameraStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "environment" },
-                audio: false,
-            });
-            const video = document.getElementById("camera-video");
-            if (!video) { stopActiveCameraStream(); return; }
-            video.srcObject = _activeCameraStream;
-            document.getElementById("camera-status").textContent = "Position the label in frame, then capture.";
-            const captureBtn = document.getElementById("capture-photo-btn");
-            captureBtn.disabled = false;
-            captureBtn.addEventListener("click", capturePhoto);
-        } catch (err) {
-            const statusEl = document.getElementById("camera-status");
-            if (statusEl) {
-                statusEl.style.color = "#b3261e";
-                statusEl.textContent = `Could not access camera (${err.message}). You can still use "Click to upload" instead.`;
-            }
-        }
-    }
-
-    function capturePhoto() {
-        const video = document.getElementById("camera-video");
-        if (!video || !video.videoWidth) return;
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob((blob) => {
-            if (!blob) return;
-            const file = new File([blob], `camera_capture_${Date.now()}.jpg`, { type: "image/jpeg" });
-            closeCamera();
-            handleFile(file);
-        }, "image/jpeg", 0.92);
-    }
-
-    function closeCamera() {
+    try {
+      _activeCameraStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+        audio: false,
+      });
+      const video = document.getElementById("camera-video");
+      if (!video) {
         stopActiveCameraStream();
-        cameraPanel.style.display = "none";
-        cameraPanel.innerHTML = "";
-        document.getElementById("scan-input-grid").style.display = "";
+        return;
+      }
+      video.srcObject = _activeCameraStream;
+      document.getElementById("camera-status").textContent =
+        "Position the label in frame, then capture.";
+      const captureBtn = document.getElementById("capture-photo-btn");
+      captureBtn.disabled = false;
+      captureBtn.addEventListener("click", capturePhoto);
+    } catch (err) {
+      const statusEl = document.getElementById("camera-status");
+      if (statusEl) {
+        statusEl.style.color = "#b3261e";
+        statusEl.textContent = `Could not access camera (${err.message}). You can still use "Click to upload" instead.`;
+      }
+    }
+  }
+
+  function capturePhoto() {
+    const video = document.getElementById("camera-video");
+    if (!video || !video.videoWidth) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) return;
+        const file = new File([blob], `camera_capture_${Date.now()}.jpg`, {
+          type: "image/jpeg",
+        });
+        closeCamera();
+        handleFile(file);
+      },
+      "image/jpeg",
+      0.92,
+    );
+  }
+
+  function closeCamera() {
+    stopActiveCameraStream();
+    cameraPanel.style.display = "none";
+    cameraPanel.innerHTML = "";
+    document.getElementById("scan-input-grid").style.display = "";
+  }
+
+  async function submitScan() {
+    if (!selectedFile) return;
+    const actionsBox = document.getElementById("scan-actions");
+    actionsBox.innerHTML = `<button class="primary" disabled><span class="spinner"></span> Submitting...</button>`;
+
+    const formData = new FormData();
+    formData.append("image", selectedFile);
+    const productName = document.getElementById("product-name").value;
+    if (productName) formData.append("product_name", productName);
+
+    let checkId;
+    try {
+      const res = await Api.createCheck(formData);
+      checkId = res.check_id;
+    } catch (err) {
+      actionsBox.innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+      return;
     }
 
-    async function submitScan() {
-        if (!selectedFile) return;
-        const actionsBox = document.getElementById("scan-actions");
-        actionsBox.innerHTML = `<button class="primary" disabled><span class="spinner"></span> Submitting...</button>`;
+    renderPipelineProgress(0);
 
-        const formData = new FormData();
-        formData.append("image", selectedFile);
-        const productName = document.getElementById("product-name").value;
-        if (productName) formData.append("product_name", productName);
+    // The backend runs the pipeline synchronously; we animate through
+    // the known stage list while awaiting the single /process call so
+    // the officer sees the real workflow structure (PRD Part 27) --
+    // we do not fabricate a longer delay than the backend actually takes.
+    let stageIdx = 0;
+    const stageTimer = setInterval(() => {
+      stageIdx = Math.min(stageIdx + 1, STAGE_LABELS.length - 1);
+      renderPipelineProgress(stageIdx);
+    }, 350);
 
-        let checkId;
-        try {
-            const res = await Api.createCheck(formData);
-            checkId = res.check_id;
-        } catch (err) {
-            actionsBox.innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-            return;
-        }
-
-        renderPipelineProgress(0);
-
-        // The backend runs the pipeline synchronously; we animate through
-        // the known stage list while awaiting the single /process call so
-        // the officer sees the real workflow structure (PRD Part 27) --
-        // we do not fabricate a longer delay than the backend actually takes.
-        let stageIdx = 0;
-        const stageTimer = setInterval(() => {
-            stageIdx = Math.min(stageIdx + 1, STAGE_LABELS.length - 1);
-            renderPipelineProgress(stageIdx);
-        }, 350);
-
-        try {
-            const result = await Api.processCheck(checkId);
-            clearInterval(stageTimer);
-            renderPipelineProgress(STAGE_LABELS.length);
-            setTimeout(() => { window.location.hash = `#/checks/${checkId}`; }, 500);
-        } catch (err) {
-            clearInterval(stageTimer);
-            document.getElementById("pipeline-progress").innerHTML =
-                `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        }
+    try {
+      const result = await Api.processCheck(checkId);
+      clearInterval(stageTimer);
+      renderPipelineProgress(STAGE_LABELS.length);
+      setTimeout(() => {
+        window.location.hash = `#/checks/${checkId}`;
+      }, 500);
+    } catch (err) {
+      clearInterval(stageTimer);
+      document.getElementById("pipeline-progress").innerHTML =
+        `<div class="error-banner">${escapeHtml(err.message)}</div>`;
     }
+  }
 
-    function renderPipelineProgress(activeIdx) {
-        const html = STAGE_LABELS.map((label, i) => {
-            const cls = i < activeIdx ? "done" : (i === activeIdx ? "active" : "");
-            return `<div class="pipeline-stage ${cls}"><span class="dot"></span> ${label}</div>`;
-        }).join("");
-        document.getElementById("pipeline-progress").innerHTML =
-            `<div class="pipeline-stages">${html}</div>`;
+  function renderPipelineProgress(activeIdx) {
+    const html = STAGE_LABELS.map((label, i) => {
+      const cls = i < activeIdx ? "done" : i === activeIdx ? "active" : "";
+      return `<div class="pipeline-stage ${cls}"><span class="dot"></span> ${label}</div>`;
+    }).join("");
+    document.getElementById("pipeline-progress").innerHTML =
+      `<div class="pipeline-stages">${html}</div>`;
+  }
+
+  let selectedBulkFiles = [];
+  const bulkFileInput = document.getElementById("bulk-file-input");
+
+  bulkFileInput.addEventListener("change", () => {
+    selectedBulkFiles = Array.from(bulkFileInput.files);
+    if (selectedBulkFiles.length > 20) {
+      document.getElementById("bulk-selected-list").innerHTML =
+        `<span style="color:#b3261e;">Please select 20 images or fewer.</span>`;
+      document.getElementById("bulk-actions").innerHTML = "";
+      return;
     }
+    document.getElementById("bulk-selected-list").innerHTML =
+      selectedBulkFiles.length
+        ? `${selectedBulkFiles.length} file(s) selected: ${selectedBulkFiles.map((f) => escapeHtml(f.name)).join(", ")}`
+        : "";
+    document.getElementById("bulk-actions").innerHTML = selectedBulkFiles.length
+      ? `<button class="primary" id="submit-bulk-btn">Run Bulk Scan (${selectedBulkFiles.length} images)</button>`
+      : "";
+    const submitBulkBtn = document.getElementById("submit-bulk-btn");
+    if (submitBulkBtn) submitBulkBtn.addEventListener("click", submitBulkScan);
+  });
 
-    let selectedBulkFiles = [];
-    const bulkFileInput = document.getElementById("bulk-file-input");
+  async function submitBulkScan() {
+    const actionsBox = document.getElementById("bulk-actions");
+    const resultsBox = document.getElementById("bulk-results");
+    actionsBox.innerHTML = `<button class="primary" disabled><span class="spinner"></span> Processing ${selectedBulkFiles.length} images...</button>`;
+    resultsBox.innerHTML = `<p class="subtitle">This can take a little while -- each image runs the full pipeline one at a time.</p>`;
 
-    bulkFileInput.addEventListener("change", () => {
-        selectedBulkFiles = Array.from(bulkFileInput.files);
-        if (selectedBulkFiles.length > 20) {
-            document.getElementById("bulk-selected-list").innerHTML =
-                `<span style="color:#b3261e;">Please select 20 images or fewer.</span>`;
-            document.getElementById("bulk-actions").innerHTML = "";
-            return;
-        }
-        document.getElementById("bulk-selected-list").innerHTML =
-            selectedBulkFiles.length
-                ? `${selectedBulkFiles.length} file(s) selected: ${selectedBulkFiles.map((f) => escapeHtml(f.name)).join(", ")}`
-                : "";
-        document.getElementById("bulk-actions").innerHTML = selectedBulkFiles.length
-            ? `<button class="primary" id="submit-bulk-btn">Run Bulk Scan (${selectedBulkFiles.length} images)</button>`
-            : "";
-        const submitBulkBtn = document.getElementById("submit-bulk-btn");
-        if (submitBulkBtn) submitBulkBtn.addEventListener("click", submitBulkScan);
-    });
+    const formData = new FormData();
+    selectedBulkFiles.forEach((file) => formData.append("images", file));
 
-    async function submitBulkScan() {
-        const actionsBox = document.getElementById("bulk-actions");
-        const resultsBox = document.getElementById("bulk-results");
-        actionsBox.innerHTML = `<button class="primary" disabled><span class="spinner"></span> Processing ${selectedBulkFiles.length} images...</button>`;
-        resultsBox.innerHTML = `<p class="subtitle">This can take a little while -- each image runs the full pipeline one at a time.</p>`;
-
-        const formData = new FormData();
-        selectedBulkFiles.forEach((file) => formData.append("images", file));
-
-        try {
-            const res = await Api.createBulkChecks(formData);
-            const rows = res.results.map((r) => {
-                const statusClass = r.status === "COMPLETED" ? "COMPLIANT"
-                    : (r.status === "REJECTED" || r.status === "PROCESSING_FAILED") ? "POTENTIAL_NON_COMPLIANCE"
-                    : "REQUIRES_OFFICER_VERIFICATION";
-                const link = r.check_id ? `<a href="#/checks/${r.check_id}">View result &rarr;</a>` : "-";
-                return `<tr>
+    try {
+      const res = await Api.createBulkChecks(formData);
+      const rows = res.results
+        .map((r) => {
+          const statusClass =
+            r.status === "COMPLETED"
+              ? "COMPLIANT"
+              : r.status === "REJECTED" || r.status === "PROCESSING_FAILED"
+                ? "POTENTIAL_NON_COMPLIANCE"
+                : "REQUIRES_OFFICER_VERIFICATION";
+          const link = r.check_id
+            ? `<a href="#/checks/${r.check_id}">View result &rarr;</a>`
+            : "-";
+          return `<tr>
                     <td>${escapeHtml(r.filename)}</td>
                     <td><span class="badge ${statusClass}">${escapeHtml(r.status)}</span></td>
                     <td>${link}</td>
                 </tr>`;
-            }).join("");
-            resultsBox.innerHTML = `
+        })
+        .join("");
+      resultsBox.innerHTML = `
                 <table class="data-table">
                     <thead><tr><th>File</th><th>Status</th><th>Result</th></tr></thead>
                     <tbody>${rows}</tbody>
@@ -465,13 +549,15 @@ function renderScan() {
                 <div class="toolbar" style="margin-top:14px;">
                     <button class="secondary" onclick="window.location.hash='#/checks'">View All in Inspection History</button>
                 </div>`;
-            actionsBox.innerHTML = "";
-        } catch (err) {
-            resultsBox.innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-            actionsBox.innerHTML = `<button class="primary" id="submit-bulk-btn">Retry Bulk Scan</button>`;
-            document.getElementById("submit-bulk-btn").addEventListener("click", submitBulkScan);
-        }
+      actionsBox.innerHTML = "";
+    } catch (err) {
+      resultsBox.innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+      actionsBox.innerHTML = `<button class="primary" id="submit-bulk-btn">Retry Bulk Scan</button>`;
+      document
+        .getElementById("submit-bulk-btn")
+        .addEventListener("click", submitBulkScan);
     }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -479,34 +565,52 @@ function renderScan() {
 // ---------------------------------------------------------------------------
 
 const CHECK_CATEGORIES = ["PACKAGED_FOOD_FMCG", "COSMETICS", "ELECTRONICS"];
-const CHECK_STATUSES = ["COMPLETED", "PROCESSING", "QUEUED", "INVALID_IMAGE", "UNSUPPORTED_CATEGORY", "PROCESSING_FAILED"];
+const CHECK_STATUSES = [
+  "COMPLETED",
+  "PROCESSING",
+  "QUEUED",
+  "INVALID_IMAGE",
+  "UNSUPPORTED_CATEGORY",
+  "PROCESSING_FAILED",
+];
 
-let _checksListFilters = { q: "", category: "", status: "", date_from: "", date_to: "" };
+let _checksListFilters = {
+  q: "",
+  category: "",
+  status: "",
+  date_from: "",
+  date_to: "",
+};
 
 let _activeCameraStream = null;
 function stopActiveCameraStream() {
-    if (_activeCameraStream) {
-        _activeCameraStream.getTracks().forEach((track) => track.stop());
-        _activeCameraStream = null;
-    }
+  if (_activeCameraStream) {
+    _activeCameraStream.getTracks().forEach((track) => track.stop());
+    _activeCameraStream = null;
+  }
 }
 
 async function renderChecksList() {
-    renderShell("#/checks", `<div class="empty-state"><span class="spinner"></span> Loading...</div>`);
-    await loadAndRenderChecksList();
+  renderShell(
+    "#/checks",
+    `<div class="empty-state"><span class="spinner"></span> Loading...</div>`,
+  );
+  await loadAndRenderChecksList();
 }
 
 async function loadAndRenderChecksList() {
-    let data;
-    try {
-        data = await Api.listChecks(_checksListFilters);
-    } catch (err) {
-        mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        return;
-    }
+  let data;
+  try {
+    data = await Api.listChecks(_checksListFilters);
+  } catch (err) {
+    mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    return;
+  }
 
-    const rows = data.checks.length
-        ? data.checks.map((c) => `
+  const rows = data.checks.length
+    ? data.checks
+        .map(
+          (c) => `
             <tr onclick="window.location.hash='#/checks/${c.id}'">
                 <td>#${c.id}</td>
                 <td>${escapeHtml(c.product_name || "-")}</td>
@@ -514,17 +618,23 @@ async function loadAndRenderChecksList() {
                 <td><span class="status-pill">${c.status}</span></td>
                 <td>${c.image_quality_score !== null ? c.image_quality_score : "-"}</td>
                 <td>${fmtDate(c.created_at)}</td>
-            </tr>`).join("")
-        : "";
+            </tr>`,
+        )
+        .join("")
+    : "";
 
-    const categoryOptions = CHECK_CATEGORIES.map((cat) =>
-        `<option value="${cat}" ${_checksListFilters.category === cat ? "selected" : ""}>${cat}</option>`).join("");
-    const statusOptions = CHECK_STATUSES.map((st) =>
-        `<option value="${st}" ${_checksListFilters.status === st ? "selected" : ""}>${st}</option>`).join("");
+  const categoryOptions = CHECK_CATEGORIES.map(
+    (cat) =>
+      `<option value="${cat}" ${_checksListFilters.category === cat ? "selected" : ""}>${cat}</option>`,
+  ).join("");
+  const statusOptions = CHECK_STATUSES.map(
+    (st) =>
+      `<option value="${st}" ${_checksListFilters.status === st ? "selected" : ""}>${st}</option>`,
+  ).join("");
 
-    const hasActiveFilters = Object.values(_checksListFilters).some((v) => v);
+  const hasActiveFilters = Object.values(_checksListFilters).some((v) => v);
 
-    mainContent().innerHTML = `
+  mainContent().innerHTML = `
         <div class="page-header"><div><h2>Inspection History</h2><p class="subtitle">Every compliance check, most recent first.</p></div></div>
         <div class="card">
             <div class="toolbar" style="flex-wrap:wrap;">
@@ -541,46 +651,58 @@ async function loadAndRenderChecksList() {
                 <input type="date" id="filter-date-to" style="max-width:160px;" value="${_checksListFilters.date_to}" />
                 <button class="secondary" id="filter-clear-btn" ${hasActiveFilters ? "" : "disabled"}>Clear Filters</button>
             </div>
-            ${data.checks.length ? `
+            ${
+              data.checks.length
+                ? `
             <table class="data-table">
                 <thead><tr><th>ID</th><th>Product</th><th>Category</th><th>Status</th><th>Image Quality</th><th>Submitted</th></tr></thead>
                 <tbody>${rows}</tbody>
-            </table>` : `
+            </table>`
+                : `
             <div class="empty-state">
                 <div class="icon">${ICONS.clipboard}</div>
                 <p>${hasActiveFilters ? "No checks match these filters." : "No compliance checks yet."}</p>
                 ${hasActiveFilters ? "" : '<button class="primary" onclick="window.location.hash=\'#/scan\'">Scan a Product</button>'}
-            </div>`}
+            </div>`
+            }
         </div>`;
 
-    let searchDebounceTimer = null;
-    document.getElementById("filter-q").addEventListener("input", (e) => {
-        clearTimeout(searchDebounceTimer);
-        searchDebounceTimer = setTimeout(() => {
-            _checksListFilters.q = e.target.value.trim();
-            loadAndRenderChecksList();
-        }, 350);
+  let searchDebounceTimer = null;
+  document.getElementById("filter-q").addEventListener("input", (e) => {
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+      _checksListFilters.q = e.target.value.trim();
+      loadAndRenderChecksList();
+    }, 350);
+  });
+  document.getElementById("filter-category").addEventListener("change", (e) => {
+    _checksListFilters.category = e.target.value;
+    loadAndRenderChecksList();
+  });
+  document.getElementById("filter-status").addEventListener("change", (e) => {
+    _checksListFilters.status = e.target.value;
+    loadAndRenderChecksList();
+  });
+  document
+    .getElementById("filter-date-from")
+    .addEventListener("change", (e) => {
+      _checksListFilters.date_from = e.target.value;
+      loadAndRenderChecksList();
     });
-    document.getElementById("filter-category").addEventListener("change", (e) => {
-        _checksListFilters.category = e.target.value;
-        loadAndRenderChecksList();
-    });
-    document.getElementById("filter-status").addEventListener("change", (e) => {
-        _checksListFilters.status = e.target.value;
-        loadAndRenderChecksList();
-    });
-    document.getElementById("filter-date-from").addEventListener("change", (e) => {
-        _checksListFilters.date_from = e.target.value;
-        loadAndRenderChecksList();
-    });
-    document.getElementById("filter-date-to").addEventListener("change", (e) => {
-        _checksListFilters.date_to = e.target.value;
-        loadAndRenderChecksList();
-    });
-    document.getElementById("filter-clear-btn").addEventListener("click", () => {
-        _checksListFilters = { q: "", category: "", status: "", date_from: "", date_to: "" };
-        loadAndRenderChecksList();
-    });
+  document.getElementById("filter-date-to").addEventListener("change", (e) => {
+    _checksListFilters.date_to = e.target.value;
+    loadAndRenderChecksList();
+  });
+  document.getElementById("filter-clear-btn").addEventListener("click", () => {
+    _checksListFilters = {
+      q: "",
+      category: "",
+      status: "",
+      date_from: "",
+      date_to: "",
+    };
+    loadAndRenderChecksList();
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -588,41 +710,50 @@ async function loadAndRenderChecksList() {
 // ---------------------------------------------------------------------------
 
 const STATUS_EXPLANATIONS = {
-    INVALID_IMAGE: "Image quality is insufficient for reliable analysis. Please capture the label again.",
-    UNSUPPORTED_CATEGORY: "Unsupported category -- compliance evaluation not available for this category.",
-    PROCESSING_FAILED: "Processing failed due to an unexpected error. Please retry or contact an administrator.",
-    QUEUED: "This check is queued and has not been processed yet.",
-    PROCESSING: "This check is currently being processed.",
+  INVALID_IMAGE:
+    "Image quality is insufficient for reliable analysis. Please capture the label again.",
+  UNSUPPORTED_CATEGORY:
+    "Unsupported category -- compliance evaluation not available for this category.",
+  PROCESSING_FAILED:
+    "Processing failed due to an unexpected error. Please retry or contact an administrator.",
+  QUEUED: "This check is queued and has not been processed yet.",
+  PROCESSING: "This check is currently being processed.",
 };
 
 async function renderCheckDetail(checkId) {
-    renderShell(`#/checks/${checkId}`, `<div class="empty-state"><span class="spinner"></span> Loading...</div>`);
-    let bundle;
-    try {
-        bundle = await Api.getResults(checkId);
-    } catch (err) {
-        mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        return;
-    }
-    const check = bundle.check;
+  renderShell(
+    `#/checks/${checkId}`,
+    `<div class="empty-state"><span class="spinner"></span> Loading...</div>`,
+  );
+  let bundle;
+  try {
+    bundle = await Api.getResults(checkId);
+  } catch (err) {
+    mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    return;
+  }
+  const check = bundle.check;
 
-    if (check.status !== "COMPLETED") {
-        mainContent().innerHTML = `
+  if (check.status !== "COMPLETED") {
+    mainContent().innerHTML = `
             <div class="page-header"><div><h2>Check #${checkId}</h2></div></div>
             <div class="card">
                 <p><span class="status-pill">${check.status}</span></p>
                 <p style="margin-top:12px;">${STATUS_EXPLANATIONS[check.status] || ""}</p>
                 ${check.image_quality_notes ? `<p class="tag">Issues: ${escapeHtml(check.image_quality_notes)}</p>` : ""}
             </div>`;
-        return;
-    }
+    return;
+  }
 
-    const fieldByType = {};
-    bundle.fields.forEach((f) => { fieldByType[f.field_type] = f; });
+  const fieldByType = {};
+  bundle.fields.forEach((f) => {
+    fieldByType[f.field_type] = f;
+  });
 
-    const reqRows = bundle.results.map((r) => {
-        const pct = Math.round(r.confidence * 100);
-        return `
+  const reqRows = bundle.results
+    .map((r) => {
+      const pct = Math.round(r.confidence * 100);
+      return `
         <div class="requirement-row">
             <div class="req-top">
                 <div>
@@ -634,9 +765,10 @@ async function renderCheckDetail(checkId) {
             <div class="confidence-bar-track"><div class="confidence-bar-fill" style="width:${pct}%"></div></div>
             <div class="req-reason">${escapeHtml(r.reason)}</div>
         </div>`;
-    }).join("");
+    })
+    .join("");
 
-    mainContent().innerHTML = `
+  mainContent().innerHTML = `
         <div class="page-header">
             <div>
                 <h2>Check #${checkId} — ${escapeHtml(check.product_name || "Unnamed product")}</h2>
@@ -668,31 +800,33 @@ async function renderCheckDetail(checkId) {
             measurements. Final enforcement decisions remain with the authorized Legal Metrology Officer.
         </div>`;
 
-        document.getElementById("download-report-btn").addEventListener("click", async () => {
-        const btn = document.getElementById("download-report-btn");
-        const originalText = btn.textContent;
-        btn.disabled = true;
-        btn.textContent = "Generating...";
-        try {
-            await Api.generateReport(checkId);
-            // Fetch the PDF with the auth token attached (a plain
-            // window.open/navigation cannot carry an Authorization header,
-            // which is why this previously returned 401 UNAUTHORIZED).
-            const blob = await Api.downloadReportBlob(checkId);
-            const blobUrl = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = blobUrl;
-            a.download = `veripack_report_check_${checkId}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
-        } catch (err) {
-            alert(err.message);
-        } finally {
-            btn.disabled = false;
-            btn.textContent = originalText;
-        }
+  document
+    .getElementById("download-report-btn")
+    .addEventListener("click", async () => {
+      const btn = document.getElementById("download-report-btn");
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Generating...";
+      try {
+        await Api.generateReport(checkId);
+        // Fetch the PDF with the auth token attached (a plain
+        // window.open/navigation cannot carry an Authorization header,
+        // which is why this previously returned 401 UNAUTHORIZED).
+        const blob = await Api.downloadReportBlob(checkId);
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = `veripack_report_check_${checkId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
     });
 }
 
@@ -701,23 +835,28 @@ async function renderCheckDetail(checkId) {
 // ---------------------------------------------------------------------------
 
 async function renderReviewQueue() {
-    renderShell("#/reviews", `<div class="empty-state"><span class="spinner"></span> Loading...</div>`);
-    let data;
-    try {
-        data = await Api.listReviews("PENDING");
-    } catch (err) {
-        mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        return;
-    }
+  renderShell(
+    "#/reviews",
+    `<div class="empty-state"><span class="spinner"></span> Loading...</div>`,
+  );
+  let data;
+  try {
+    data = await Api.listReviews("PENDING");
+  } catch (err) {
+    mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    return;
+  }
 
-    if (!data.reviews.length) {
-        mainContent().innerHTML = `
+  if (!data.reviews.length) {
+    mainContent().innerHTML = `
             <div class="page-header"><div><h2>Review Queue</h2></div></div>
             <div class="card"><div class="empty-state"><div class="icon">${ICONS.checkCircle}</div><p>No pending reviews. Everything above the confidence threshold has been auto-resolved.</p></div></div>`;
-        return;
-    }
+    return;
+  }
 
-    const rows = data.reviews.map((r) => `
+  const rows = data.reviews
+    .map(
+      (r) => `
         <div class="requirement-row">
             <div class="req-top">
                 <div>
@@ -731,22 +870,26 @@ async function renderReviewQueue() {
                 <button class="primary" data-task="${r.id}">Review This Item</button>
                 <a href="#/checks/${r.check_id}" style="font-size:13px;">View full check &rarr;</a>
             </div>
-        </div>`).join("");
+        </div>`,
+    )
+    .join("");
 
-    mainContent().innerHTML = `
+  mainContent().innerHTML = `
         <div class="page-header"><div><h2>Review Queue</h2><p class="subtitle">${data.reviews.length} item(s) below the confidence threshold, awaiting officer verification.</p></div></div>
         ${rows}`;
 
-    mainContent().querySelectorAll("button[data-task]").forEach((btn) => {
-        const item = data.reviews.find((r) => String(r.id) === btn.dataset.task);
-        btn.addEventListener("click", () => openReviewModal(item));
+  mainContent()
+    .querySelectorAll("button[data-task]")
+    .forEach((btn) => {
+      const item = data.reviews.find((r) => String(r.id) === btn.dataset.task);
+      btn.addEventListener("click", () => openReviewModal(item));
     });
 }
 
 function openReviewModal(item) {
-    const overlay = el(`<div class="modal-overlay"></div>`);
+  const overlay = el(`<div class="modal-overlay"></div>`);
 
-    overlay.innerHTML = `
+  overlay.innerHTML = `
         <div class="modal-box">
             <h3>${escapeHtml(item.requirement_name)}</h3>
             <p class="req-meta" style="margin-top:-6px;">Check #${item.check_id} &middot; ${escapeHtml(item.rule_reference)}</p>
@@ -782,57 +925,64 @@ function openReviewModal(item) {
                 <button class="secondary" id="modal-cancel">Cancel</button>
             </div>
         </div>`;
-    document.body.appendChild(overlay);
+  document.body.appendChild(overlay);
 
-    const chooseStep = overlay.querySelector("#review-step-choose");
-    const changeStep = overlay.querySelector("#review-step-change");
-    const cancelRow = overlay.querySelector("#cancel-row");
+  const chooseStep = overlay.querySelector("#review-step-choose");
+  const changeStep = overlay.querySelector("#review-step-change");
+  const cancelRow = overlay.querySelector("#cancel-row");
 
-    overlay.querySelector("#modal-cancel").addEventListener("click", () => overlay.remove());
+  overlay
+    .querySelector("#modal-cancel")
+    .addEventListener("click", () => overlay.remove());
 
-    overlay.querySelector("#agree-btn").addEventListener("click", async () => {
-        try {
-            await Api.submitReviewDecision(item.id, {
-                decision: "CONFIRM",
-                reason: "Confirmed correct by officer.",
-            });
-            overlay.remove();
-            renderReviewQueue();
-        } catch (err) {
-            alert(err.message);
-        }
-    });
+  overlay.querySelector("#agree-btn").addEventListener("click", async () => {
+    try {
+      await Api.submitReviewDecision(item.id, {
+        decision: "CONFIRM",
+        reason: "Confirmed correct by officer.",
+      });
+      overlay.remove();
+      renderReviewQueue();
+    } catch (err) {
+      alert(err.message);
+    }
+  });
 
-    overlay.querySelector("#change-btn").addEventListener("click", () => {
-        chooseStep.style.display = "none";
-        cancelRow.style.display = "none";
-        changeStep.style.display = "block";
-    });
+  overlay.querySelector("#change-btn").addEventListener("click", () => {
+    chooseStep.style.display = "none";
+    cancelRow.style.display = "none";
+    changeStep.style.display = "block";
+  });
 
-    overlay.querySelector("#back-btn").addEventListener("click", () => {
-        changeStep.style.display = "none";
-        chooseStep.style.display = "block";
-        cancelRow.style.display = "flex";
-    });
+  overlay.querySelector("#back-btn").addEventListener("click", () => {
+    changeStep.style.display = "none";
+    chooseStep.style.display = "block";
+    cancelRow.style.display = "flex";
+  });
 
-    overlay.querySelector("#save-change-btn").addEventListener("click", async () => {
-        const reason = overlay.querySelector("#review-reason").value.trim();
-        const correctedVerdict = overlay.querySelector("#corrected-verdict").value;
-        if (!reason) {
-            overlay.querySelector("#modal-error").innerHTML = `<div class="error-banner">Please briefly say why.</div>`;
-            return;
-        }
-        try {
-            await Api.submitReviewDecision(item.id, {
-                decision: "CORRECT",
-                corrected_verdict: correctedVerdict,
-                reason,
-            });
-            overlay.remove();
-            renderReviewQueue();
-        } catch (err) {
-            overlay.querySelector("#modal-error").innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        }
+  overlay
+    .querySelector("#save-change-btn")
+    .addEventListener("click", async () => {
+      const reason = overlay.querySelector("#review-reason").value.trim();
+      const correctedVerdict =
+        overlay.querySelector("#corrected-verdict").value;
+      if (!reason) {
+        overlay.querySelector("#modal-error").innerHTML =
+          `<div class="error-banner">Please briefly say why.</div>`;
+        return;
+      }
+      try {
+        await Api.submitReviewDecision(item.id, {
+          decision: "CORRECT",
+          corrected_verdict: correctedVerdict,
+          reason,
+        });
+        overlay.remove();
+        renderReviewQueue();
+      } catch (err) {
+        overlay.querySelector("#modal-error").innerHTML =
+          `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+      }
     });
 }
 
@@ -841,16 +991,21 @@ function openReviewModal(item) {
 // ---------------------------------------------------------------------------
 
 async function renderRuleVersions() {
-    renderShell("#/admin/rules", `<div class="empty-state"><span class="spinner"></span> Loading...</div>`);
-    let data;
-    try {
-        data = await Api.listRuleVersions();
-    } catch (err) {
-        mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        return;
-    }
+  renderShell(
+    "#/admin/rules",
+    `<div class="empty-state"><span class="spinner"></span> Loading...</div>`,
+  );
+  let data;
+  try {
+    data = await Api.listRuleVersions();
+  } catch (err) {
+    mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    return;
+  }
 
-    const rows = data.rule_versions.map((rv) => `
+  const rows = data.rule_versions
+    .map(
+      (rv) => `
         <tr onclick="window.location.hash='#/admin/rules/${rv.id}'">
             <td>${escapeHtml(rv.name)}</td>
             <td>v${escapeHtml(rv.version_label)}</td>
@@ -859,9 +1014,11 @@ async function renderRuleVersions() {
             <td>${rv.effective_from || "-"}</td>
             <td>${rv.effective_to || "open"}</td>
             <td>${rv.requirement_count}</td>
-        </tr>`).join("");
+        </tr>`,
+    )
+    .join("");
 
-    mainContent().innerHTML = `
+  mainContent().innerHTML = `
         <div class="page-header">
             <div><h2>Regulatory Rule Engine</h2><p class="subtitle">Rules are versioned data. Updating the law here does not require a code deployment.</p></div>
             <button class="primary" id="new-rule-btn">+ New Rule Version</button>
@@ -873,12 +1030,14 @@ async function renderRuleVersions() {
             </table>
         </div>`;
 
-    document.getElementById("new-rule-btn").addEventListener("click", openNewRuleVersionModal);
+  document
+    .getElementById("new-rule-btn")
+    .addEventListener("click", openNewRuleVersionModal);
 }
 
 function openNewRuleVersionModal() {
-    const overlay = el(`<div class="modal-overlay"></div>`);
-    overlay.innerHTML = `
+  const overlay = el(`<div class="modal-overlay"></div>`);
+  overlay.innerHTML = `
         <div class="modal-box">
             <h3>Create Rule Version</h3>
             <label>Name</label><input id="rv-name" placeholder="e.g. PC Rules 2011 (as amended 2026) - Food/FMCG" />
@@ -893,53 +1052,67 @@ function openNewRuleVersionModal() {
                 <button class="secondary" id="modal-cancel">Cancel</button>
             </div>
         </div>`;
-    document.body.appendChild(overlay);
-    overlay.querySelector("#modal-cancel").addEventListener("click", () => overlay.remove());
-    overlay.querySelector("#modal-submit").addEventListener("click", async () => {
-        const payload = {
-            name: overlay.querySelector("#rv-name").value.trim(),
-            version_label: overlay.querySelector("#rv-version").value.trim(),
-            category: overlay.querySelector("#rv-category").value,
-            source_document: overlay.querySelector("#rv-source-doc").value.trim(),
-            source_reference: overlay.querySelector("#rv-source-ref").value.trim(),
-        };
-        if (!payload.name || !payload.version_label || !payload.source_document) {
-            overlay.querySelector("#modal-error").innerHTML = `<div class="error-banner">Name, version label, and source document are required.</div>`;
-            return;
-        }
-        try {
-            const res = await Api.createRuleVersion(payload);
-            overlay.remove();
-            window.location.hash = `#/admin/rules/${res.id}`;
-        } catch (err) {
-            overlay.querySelector("#modal-error").innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        }
-    });
+  document.body.appendChild(overlay);
+  overlay
+    .querySelector("#modal-cancel")
+    .addEventListener("click", () => overlay.remove());
+  overlay.querySelector("#modal-submit").addEventListener("click", async () => {
+    const payload = {
+      name: overlay.querySelector("#rv-name").value.trim(),
+      version_label: overlay.querySelector("#rv-version").value.trim(),
+      category: overlay.querySelector("#rv-category").value,
+      source_document: overlay.querySelector("#rv-source-doc").value.trim(),
+      source_reference: overlay.querySelector("#rv-source-ref").value.trim(),
+    };
+    if (!payload.name || !payload.version_label || !payload.source_document) {
+      overlay.querySelector("#modal-error").innerHTML =
+        `<div class="error-banner">Name, version label, and source document are required.</div>`;
+      return;
+    }
+    try {
+      const res = await Api.createRuleVersion(payload);
+      overlay.remove();
+      window.location.hash = `#/admin/rules/${res.id}`;
+    } catch (err) {
+      overlay.querySelector("#modal-error").innerHTML =
+        `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    }
+  });
 }
 
 async function renderRuleVersionDetail(ruleVersionId) {
-    renderShell("#/admin/rules", `<div class="empty-state"><span class="spinner"></span> Loading...</div>`);
-    let data;
-    try {
-        data = await Api.getRuleVersion(ruleVersionId);
-    } catch (err) {
-        mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        return;
-    }
-    const rv = data.rule_version;
+  renderShell(
+    "#/admin/rules",
+    `<div class="empty-state"><span class="spinner"></span> Loading...</div>`,
+  );
+  let data;
+  try {
+    data = await Api.getRuleVersion(ruleVersionId);
+  } catch (err) {
+    mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    return;
+  }
+  const rv = data.rule_version;
 
-    const reqRows = data.requirements.map((r) => `
+  const reqRows =
+    data.requirements
+      .map(
+        (r) => `
         <tr>
             <td>${escapeHtml(r.requirement_name)}</td>
             <td>${escapeHtml(r.field_type)}</td>
             <td>${escapeHtml(r.applicability_logic)}</td>
             <td>${escapeHtml(r.severity)}</td>
             <td style="font-size:12px;">${escapeHtml(r.source_citation)}</td>
-        </tr>`).join("") || `<tr><td colspan="5" style="text-align:center;color:#5b6b7c;">No requirements yet.</td></tr>`;
+        </tr>`,
+      )
+      .join("") ||
+    `<tr><td colspan="5" style="text-align:center;color:#5b6b7c;">No requirements yet.</td></tr>`;
 
-    const canEdit = !rv.locked && (rv.status === "DRAFT" || rv.status === "REVIEW");
+  const canEdit =
+    !rv.locked && (rv.status === "DRAFT" || rv.status === "REVIEW");
 
-    mainContent().innerHTML = `
+  mainContent().innerHTML = `
         <div class="page-header">
             <div>
                 <h2>${escapeHtml(rv.name)} <span class="status-pill">${rv.status}</span></h2>
@@ -966,34 +1139,50 @@ async function renderRuleVersionDetail(ruleVersionId) {
             </table>
         </div>`;
 
-    const addBtn = document.getElementById("add-req-btn");
-    if (addBtn) addBtn.addEventListener("click", () => openAddRequirementModal(ruleVersionId));
+  const addBtn = document.getElementById("add-req-btn");
+  if (addBtn)
+    addBtn.addEventListener("click", () =>
+      openAddRequirementModal(ruleVersionId),
+    );
 
-    document.getElementById("duplicate-btn").addEventListener("click", async () => {
-        const label = prompt("New version label for the duplicate (e.g. 1.3):");
-        if (!label) return;
-        try {
-            const res = await Api.duplicateRuleVersion(ruleVersionId, { version_label: label });
-            window.location.hash = `#/admin/rules/${res.id}`;
-        } catch (err) { alert(err.message); }
+  document
+    .getElementById("duplicate-btn")
+    .addEventListener("click", async () => {
+      const label = prompt("New version label for the duplicate (e.g. 1.3):");
+      if (!label) return;
+      try {
+        const res = await Api.duplicateRuleVersion(ruleVersionId, {
+          version_label: label,
+        });
+        window.location.hash = `#/admin/rules/${res.id}`;
+      } catch (err) {
+        alert(err.message);
+      }
     });
 
-    const activateBtn = document.getElementById("activate-btn");
-    if (activateBtn) {
-        activateBtn.addEventListener("click", async () => {
-            const effectiveFrom = prompt("Effective from date (YYYY-MM-DD):", new Date().toISOString().slice(0, 10));
-            if (!effectiveFrom) return;
-            try {
-                await Api.activateRuleVersion(ruleVersionId, { effective_from: effectiveFrom });
-                renderRuleVersionDetail(ruleVersionId);
-            } catch (err) { alert(err.message); }
+  const activateBtn = document.getElementById("activate-btn");
+  if (activateBtn) {
+    activateBtn.addEventListener("click", async () => {
+      const effectiveFrom = prompt(
+        "Effective from date (YYYY-MM-DD):",
+        new Date().toISOString().slice(0, 10),
+      );
+      if (!effectiveFrom) return;
+      try {
+        await Api.activateRuleVersion(ruleVersionId, {
+          effective_from: effectiveFrom,
         });
-    }
+        renderRuleVersionDetail(ruleVersionId);
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+  }
 }
 
 function openAddRequirementModal(ruleVersionId) {
-    const overlay = el(`<div class="modal-overlay"></div>`);
-    overlay.innerHTML = `
+  const overlay = el(`<div class="modal-overlay"></div>`);
+  overlay.innerHTML = `
         <div class="modal-box">
             <h3>Add Requirement</h3>
             <label>Requirement code</label><input id="req-code" placeholder="e.g. MRP" />
@@ -1022,34 +1211,43 @@ function openAddRequirementModal(ruleVersionId) {
                 <button class="secondary" id="modal-cancel">Cancel</button>
             </div>
         </div>`;
-    document.body.appendChild(overlay);
-    overlay.querySelector("#modal-cancel").addEventListener("click", () => overlay.remove());
-    overlay.querySelector("#modal-submit").addEventListener("click", async () => {
-        const vtype = overlay.querySelector("#req-validation-type").value;
-        const validationLogic = vtype === "format"
-            ? { type: "format", requires: ["value", "unit"] }
-            : { type: vtype };
-        const payload = {
-            requirement_code: overlay.querySelector("#req-code").value.trim(),
-            requirement_name: overlay.querySelector("#req-name").value.trim(),
-            field_type: overlay.querySelector("#req-field-type").value,
-            applicability_logic: overlay.querySelector("#req-applicability").value,
-            severity: overlay.querySelector("#req-severity").value,
-            source_citation: overlay.querySelector("#req-citation").value.trim(),
-            validation_logic: validationLogic,
-        };
-        if (!payload.requirement_code || !payload.requirement_name || !payload.source_citation) {
-            overlay.querySelector("#modal-error").innerHTML = `<div class="error-banner">Code, name, and source citation are required.</div>`;
-            return;
-        }
-        try {
-            await Api.addRequirement(ruleVersionId, payload);
-            overlay.remove();
-            renderRuleVersionDetail(ruleVersionId);
-        } catch (err) {
-            overlay.querySelector("#modal-error").innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        }
-    });
+  document.body.appendChild(overlay);
+  overlay
+    .querySelector("#modal-cancel")
+    .addEventListener("click", () => overlay.remove());
+  overlay.querySelector("#modal-submit").addEventListener("click", async () => {
+    const vtype = overlay.querySelector("#req-validation-type").value;
+    const validationLogic =
+      vtype === "format"
+        ? { type: "format", requires: ["value", "unit"] }
+        : { type: vtype };
+    const payload = {
+      requirement_code: overlay.querySelector("#req-code").value.trim(),
+      requirement_name: overlay.querySelector("#req-name").value.trim(),
+      field_type: overlay.querySelector("#req-field-type").value,
+      applicability_logic: overlay.querySelector("#req-applicability").value,
+      severity: overlay.querySelector("#req-severity").value,
+      source_citation: overlay.querySelector("#req-citation").value.trim(),
+      validation_logic: validationLogic,
+    };
+    if (
+      !payload.requirement_code ||
+      !payload.requirement_name ||
+      !payload.source_citation
+    ) {
+      overlay.querySelector("#modal-error").innerHTML =
+        `<div class="error-banner">Code, name, and source citation are required.</div>`;
+      return;
+    }
+    try {
+      await Api.addRequirement(ruleVersionId, payload);
+      overlay.remove();
+      renderRuleVersionDetail(ruleVersionId);
+    } catch (err) {
+      overlay.querySelector("#modal-error").innerHTML =
+        `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    }
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -1057,23 +1255,32 @@ function openAddRequirementModal(ruleVersionId) {
 // ---------------------------------------------------------------------------
 
 async function renderAuditLog() {
-    renderShell("#/audit", `<div class="empty-state"><span class="spinner"></span> Loading...</div>`);
-    let data;
-    try {
-        data = await Api.auditLogs();
-    } catch (err) {
-        mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
-        return;
-    }
-    const rows = data.audit_logs.map((l) => `
+  renderShell(
+    "#/audit",
+    `<div class="empty-state"><span class="spinner"></span> Loading...</div>`,
+  );
+  let data;
+  try {
+    data = await Api.auditLogs();
+  } catch (err) {
+    mainContent().innerHTML = `<div class="error-banner">${escapeHtml(err.message)}</div>`;
+    return;
+  }
+  const rows =
+    data.audit_logs
+      .map(
+        (l) => `
         <tr>
             <td>${fmtDate(l.timestamp)}</td>
             <td>${escapeHtml(l.actor_name || "system")}</td>
             <td><span class="tag">${escapeHtml(l.action)}</span></td>
             <td>${escapeHtml(l.entity_type)} #${l.entity_id ?? "-"}</td>
-        </tr>`).join("") || `<tr><td colspan="4" style="text-align:center;color:#5b6b7c;padding:20px;">No audit events yet.</td></tr>`;
+        </tr>`,
+      )
+      .join("") ||
+    `<tr><td colspan="4" style="text-align:center;color:#5b6b7c;padding:20px;">No audit events yet.</td></tr>`;
 
-    mainContent().innerHTML = `
+  mainContent().innerHTML = `
         <div class="page-header"><div><h2>Audit Log</h2><p class="subtitle">Append-only. Every significant state change is recorded here.</p></div></div>
         <div class="card">
             <table class="data-table">
@@ -1088,33 +1295,39 @@ async function renderAuditLog() {
 // ---------------------------------------------------------------------------
 
 async function router() {
-    stopActiveCameraStream();
-    const hash = window.location.hash || "#/dashboard";
-    const isAuthed = !!Api.token() && !!Api.currentUser();
+  stopActiveCameraStream();
+  const hash = window.location.hash || "#/dashboard";
+  const isAuthed = !!Api.token() && !!Api.currentUser();
 
-    if (!isAuthed) {
-        if (hash !== "#/login") { window.location.hash = "#/login"; return; }
-        renderLogin();
-        return;
+  if (!isAuthed) {
+    if (hash !== "#/login") {
+      window.location.hash = "#/login";
+      return;
     }
-    if (hash === "#/login") { window.location.hash = "#/dashboard"; return; }
+    renderLogin();
+    return;
+  }
+  if (hash === "#/login") {
+    window.location.hash = "#/dashboard";
+    return;
+  }
 
-    if (hash === "#/dashboard" || hash === "#/") return renderDashboard();
-    if (hash === "#/scan") return renderScan();
-    if (hash === "#/checks") return renderChecksList();
+  if (hash === "#/dashboard" || hash === "#/") return renderDashboard();
+  if (hash === "#/scan") return renderScan();
+  if (hash === "#/checks") return renderChecksList();
 
-    let m = hash.match(/^#\/checks\/(\d+)$/);
-    if (m) return renderCheckDetail(m[1]);
+  let m = hash.match(/^#\/checks\/(\d+)$/);
+  if (m) return renderCheckDetail(m[1]);
 
-    if (hash === "#/reviews") return renderReviewQueue();
-    if (hash === "#/admin/rules") return renderRuleVersions();
+  if (hash === "#/reviews") return renderReviewQueue();
+  if (hash === "#/admin/rules") return renderRuleVersions();
 
-    m = hash.match(/^#\/admin\/rules\/(\d+)$/);
-    if (m) return renderRuleVersionDetail(m[1]);
+  m = hash.match(/^#\/admin\/rules\/(\d+)$/);
+  if (m) return renderRuleVersionDetail(m[1]);
 
-    if (hash === "#/audit") return renderAuditLog();
+  if (hash === "#/audit") return renderAuditLog();
 
-    return renderDashboard();
+  return renderDashboard();
 }
 
 window.addEventListener("hashchange", router);

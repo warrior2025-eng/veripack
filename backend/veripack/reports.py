@@ -38,8 +38,8 @@ VERDICT_COLORS = {
 
 LIMITATION_TEXT = (
     "VeriPack is an assistive screening and evidence tool. It does not issue a final legal "
-    "determination of non-compliance -- that authority remains with the Legal Metrology Officer "
-    "and the statutory process. Declared net quantity presence/format is checked; physical net "
+    "determination of non-compliance. That authority remains with the Legal Metrology Officer "
+    "and the statutory process. Declared net quantity presence and format is checked; physical net "
     "quantity accuracy cannot be certified from a photograph and requires metrological weighing "
     "under the Sixth Schedule. Numeral height (font-size) estimates in this report are relative, "
     "uncalibrated approximations, not certified millimetre measurements, unless a calibration "
