@@ -7,9 +7,7 @@
 
 PRAGMA foreign_keys = ON;
 
--- ---------------------------------------------------------------------------
 -- Identity & access
--- ---------------------------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS organization (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,9 +27,9 @@ CREATE TABLE IF NOT EXISTS user (
     created_at      TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- ---------------------------------------------------------------------------
+
 -- Regulatory rule engine (the core differentiator -- see docs/RULE_ENGINE.md)
--- ---------------------------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS rule_version (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,9 +64,9 @@ CREATE TABLE IF NOT EXISTS rule_requirement (
     UNIQUE (rule_version_id, requirement_code)
 );
 
--- ---------------------------------------------------------------------------
+
 -- Product / scanning subjects
--- ---------------------------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS product (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,9 +85,9 @@ CREATE TABLE IF NOT EXISTS product_image (
     created_at      TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- ---------------------------------------------------------------------------
+
 -- Compliance checks (the central workflow object)
--- ---------------------------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS compliance_check (
     id                      INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -150,9 +148,9 @@ CREATE TABLE IF NOT EXISTS evidence_item (
     created_at            TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- ---------------------------------------------------------------------------
+
 -- Human review
--- ---------------------------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS review_task (
     id                      INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -176,9 +174,9 @@ CREATE TABLE IF NOT EXISTS review_decision (
     created_at            TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- ---------------------------------------------------------------------------
+
 -- Reporting
--- ---------------------------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS report (
     id                    INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -188,9 +186,9 @@ CREATE TABLE IF NOT EXISTS report (
     created_at            TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- ---------------------------------------------------------------------------
+
 -- Audit log -- append-only, never updated/deleted by application code
--- ---------------------------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS audit_log (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -204,10 +202,9 @@ CREATE TABLE IF NOT EXISTS audit_log (
     timestamp     TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- ---------------------------------------------------------------------------
 -- Background job table (stands in for a Celery/Redis queue -- see
 -- docs/ARCHITECTURE.md for the production swap-in)
--- ---------------------------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS job (
     id                    INTEGER PRIMARY KEY AUTOINCREMENT,

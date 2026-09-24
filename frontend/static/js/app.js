@@ -94,9 +94,8 @@ function verdictBadge(verdict) {
   return `<span class="badge ${verdict}">${VERDICT_LABELS[verdict] || verdict}</span>`;
 }
 
-// ---------------------------------------------------------------------------
+
 // Shell: sidebar + routed content
-// ---------------------------------------------------------------------------
 
 function renderShell(activePath, contentHtml) {
   const user = Api.currentUser();
@@ -141,9 +140,9 @@ function mainContent() {
   return document.getElementById("main-content");
 }
 
-// ---------------------------------------------------------------------------
+
 // View: Login
-// ---------------------------------------------------------------------------
+
 
 function renderLogin() {
   document.getElementById("app").innerHTML = `
@@ -186,9 +185,9 @@ function renderLogin() {
     });
 }
 
-// ---------------------------------------------------------------------------
+
 // View: Dashboard
-// ---------------------------------------------------------------------------
+
 
 async function renderDashboard() {
   renderShell(
@@ -257,9 +256,9 @@ async function renderDashboard() {
         </div>`;
 }
 
-// ---------------------------------------------------------------------------
+
 // View: Scan Product
-// ---------------------------------------------------------------------------
+
 
 const STAGE_LABELS = [
   "Image Quality",
@@ -352,7 +351,7 @@ function renderScan() {
       .addEventListener("click", submitScan);
   }
 
-  // ---- Direct camera capture ----
+  //  Direct camera capture 
   const takePhotoBtn = document.getElementById("camera-trigger");
   const cameraPanel = document.getElementById("camera-panel");
 
@@ -560,9 +559,9 @@ function renderScan() {
   }
 }
 
-// ---------------------------------------------------------------------------
+
 // View: Inspection History (list, with search/filter)
-// ---------------------------------------------------------------------------
+
 
 const CHECK_CATEGORIES = ["PACKAGED_FOOD_FMCG", "COSMETICS", "ELECTRONICS"];
 const CHECK_STATUSES = [
@@ -705,9 +704,9 @@ async function loadAndRenderChecksList() {
   });
 }
 
-// ---------------------------------------------------------------------------
+
 // View: Check detail (results + evidence + report)
-// ---------------------------------------------------------------------------
+
 
 const STATUS_EXPLANATIONS = {
   INVALID_IMAGE:
@@ -830,9 +829,9 @@ async function renderCheckDetail(checkId) {
     });
 }
 
-// ---------------------------------------------------------------------------
+
 // View: Review Queue
-// ---------------------------------------------------------------------------
+
 
 async function renderReviewQueue() {
   renderShell(
@@ -986,9 +985,9 @@ function openReviewModal(item) {
     });
 }
 
-// ---------------------------------------------------------------------------
+
 // View: Admin -- Regulatory Rule Versions
-// ---------------------------------------------------------------------------
+
 
 async function renderRuleVersions() {
   renderShell(
@@ -1250,9 +1249,9 @@ function openAddRequirementModal(ruleVersionId) {
   });
 }
 
-// ---------------------------------------------------------------------------
+
 // View: Audit Log
-// ---------------------------------------------------------------------------
+
 
 async function renderAuditLog() {
   renderShell(
@@ -1290,9 +1289,7 @@ async function renderAuditLog() {
         </div>`;
 }
 
-// ---------------------------------------------------------------------------
 // Router
-// ---------------------------------------------------------------------------
 
 async function router() {
   stopActiveCameraStream();
